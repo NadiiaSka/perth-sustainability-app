@@ -12,6 +12,7 @@ const api = axios.create({
 export interface Household {
   id: number;
   name: string;
+  members: number;
   postcode: string;
   created_at: string;
 }
@@ -35,7 +36,7 @@ export interface DashboardData {
 export const householdApi = {
   getAll: () => api.get<{ households: Household[] }>("/households"),
   getById: (id: number) => api.get<DashboardData>(`/households/${id}`),
-  create: (data: { name: string; postcode: string }) =>
+  create: (data: { name: string; members: number; postcode: string }) =>
     api.post<Household>("/households", data),
   delete: (id: number) => api.delete(`/households/${id}`),
 };

@@ -6,6 +6,7 @@ function RegisterPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
+    members: 1,
     postcode: "",
   });
   const [error, setError] = useState("");
@@ -28,14 +29,14 @@ function RegisterPage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
+      <div className="p-8 bg-white rounded-lg shadow-md">
+        <h1 className="mb-6 text-3xl font-bold text-gray-800">
           Register Your Household
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="px-4 py-3 text-red-700 border border-red-200 rounded-lg bg-red-50">
               {error}
             </div>
           )}
@@ -43,7 +44,7 @@ function RegisterPage() {
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block mb-2 text-sm font-medium text-gray-700"
             >
               Household Name
             </label>
@@ -59,11 +60,33 @@ function RegisterPage() {
               placeholder="e.g., Smith Family"
             />
           </div>
+          <div>
+            <label
+              htmlFor="members"
+              className="block mb-2 text-sm font-medium text-gray-700"
+            >
+              Number of occupants
+            </label>
+            <input
+              type="number"
+              id="members"
+              required
+              value={formData.members}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  members: parseInt(e.target.value) || 0,
+                })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+              placeholder="e.g., 4"
+            />
+          </div>
 
           <div>
             <label
               htmlFor="postcode"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block mb-2 text-sm font-medium text-gray-700"
             >
               Postcode
             </label>
@@ -83,7 +106,7 @@ function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-6 py-3 font-semibold text-white transition rounded-lg bg-primary hover:bg-secondary disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Registering..." : "Register Household"}
           </button>

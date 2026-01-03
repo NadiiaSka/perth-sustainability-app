@@ -28,6 +28,7 @@ export async function createTables() {
       CREATE TABLE IF NOT EXISTS households (
         id SERIAL PRIMARY KEY,
         name VARCHAR(120) NOT NULL,
+        members INTEGER NOT NULL,
         postcode VARCHAR(10) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
@@ -72,6 +73,7 @@ export interface Household {
   id: number;
   name: string;
   postcode: string;
+  members: number;
   created_at: string;
 }
 

@@ -75,16 +75,18 @@ router.get("/:id", async (req: Request, res: Response) => {
 // POST create household
 router.post("/", async (req: Request, res: Response) => {
   const pool: Pool = req.app.locals.db;
-  const { name, postcode } = req.body;
+  const { name, members, postcode } = req.body;
 
-  if (!name || !postcode) {
-    return res.status(400).json({ error: "Name and postcode are required" });
+  if (!name || !postcode || !members) {
+    return res
+      .status(400)
+      .json({ error: "Name, number of occupants, and postcode are required" });
   }
 
   try {
     const result = await pool.query(
-      "INSERT INTO households (name, postcode) VALUES ($1, $2) RETURNING *",
-      [name, postcode]
+      "INSERT INTO households (name, members, postcode) VALUES ($1, $2, $3) RETURNING *",
+      [name, members, postcode]
     );
 
     res.status(201).json(result.rows[0]);
