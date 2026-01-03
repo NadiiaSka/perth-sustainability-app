@@ -6,7 +6,9 @@ import AddUsagePage from "./pages/AddUsagePage";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+    >
       <div className="min-h-screen bg-gray-50">
         <nav className="bg-primary text-white shadow-lg">
           <div className="container mx-auto px-4 py-4">
