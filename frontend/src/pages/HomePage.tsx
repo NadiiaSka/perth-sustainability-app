@@ -23,52 +23,35 @@ function HomePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div>
+        <div>Loading...</div>
       </div>
     );
   }
 
   return (
     <div>
-      <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-        <h1 className="text-4xl font-bold text-gray-800 mb-4">
-          Welcome to Sustainability Tracker
-        </h1>
-        <p className="text-lg text-gray-600 mb-6">
+      <div>
+        <h1>Welcome to Sustainability Tracker</h1>
+        <p>
           Monitor your household's water and energy usage, get personalized
           tips, and track your environmental impact with our Green Score system.
         </p>
-        <Link
-          to="/register"
-          className="inline-block px-6 py-3 bg-primary text-white rounded-lg hover:bg-secondary transition text-lg font-semibold"
-        >
-          Get Started
-        </Link>
+        <Link to="/register">Get Started</Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          Registered Households
-        </h2>
+      <div>
+        <h2>Registered Households</h2>
 
         {households.length === 0 ? (
-          <p className="text-gray-600 text-center py-8">
-            No households registered yet. Be the first to start tracking!
-          </p>
+          <p>No households registered yet. Be the first to start tracking!</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div>
             {households.map((household) => (
-              <Link
-                key={household.id}
-                to={`/household/${household.id}`}
-                className="block p-6 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-primary transition"
-              >
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {household.name}
-                </h3>
-                <p className="text-gray-600">📍 {household.postcode}</p>
-                <p className="text-sm text-gray-500 mt-2">
+              <Link key={household.id} to={`/household/${household.id}`}>
+                <h3>{household.name}</h3>
+                <p>📍 {household.postcode}</p>
+                <p>
                   Registered:{" "}
                   {new Date(household.created_at).toLocaleDateString()}
                 </p>

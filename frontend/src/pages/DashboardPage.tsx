@@ -49,14 +49,14 @@ function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div>
+        <div>Loading...</div>
       </div>
     );
   }
 
   if (!data) {
-    return <div className="text-center py-8">Household not found</div>;
+    return <div>Household not found</div>;
   }
 
   const chartData = [
@@ -64,46 +64,38 @@ function DashboardPage() {
     { name: "Energy", value: data.summary.energy || 0 },
   ];
 
-  const getScoreColor = (score: number) => {
-    if (score >= 70) return "text-green-600";
-    if (score >= 40) return "text-yellow-600";
-    return "text-red-600";
-  };
-
   return (
-    <div className="space-y-8">
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <div className="flex justify-between items-start mb-6">
+    <div>
+      <div>
+        <div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">
+            <h1>
               {data.household.name}
             </h1>
-            <p className="text-gray-600">📍 {data.household.postcode}</p>
+            <p>📍 {data.household.postcode}</p>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-600 mb-2">Green Score</div>
-            <div
-              className={`text-5xl font-bold ${getScoreColor(data.greenScore)}`}
-            >
+          <div>
+            <div>Green Score</div>
+            <div>
               {data.greenScore}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <div className="bg-blue-50 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">
+        <div>
+          <div>
+            <h3>
               💧 Total Water
             </h3>
-            <p className="text-3xl font-bold text-blue-600">
+            <p>
               {data.summary.water?.toFixed(1) || 0} L
             </p>
           </div>
-          <div className="bg-yellow-50 p-6 rounded-lg">
-            <h3 className="text-lg font-semibold text-yellow-900 mb-2">
+          <div>
+            <h3>
               ⚡ Total Energy
             </h3>
-            <p className="text-3xl font-bold text-yellow-600">
+            <p>
               {data.summary.energy?.toFixed(1) || 0} kWh
             </p>
           </div>
@@ -121,79 +113,67 @@ function DashboardPage() {
         </ResponsiveContainer>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+      <div>
+        <h2>
           💡 Personalized Tips
         </h2>
-        <ul className="space-y-3">
+        <ul>
           {data.tips.map((tip, index) => (
-            <li key={index} className="flex items-start">
-              <span className="text-primary mr-2">✓</span>
-              <span className="text-gray-700">{tip}</span>
+            <li key={index}>
+              <span>✓</span>
+              <span>{tip}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Recent Entries</h2>
-          <div className="space-x-4">
-            <button
-              onClick={handleExport}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition"
-            >
+      <div>
+        <div>
+          <h2>Recent Entries</h2>
+          <div>
+            <button onClick={handleExport}>
               Export CSV
             </button>
-            <Link
-              to={`/household/${id}/add`}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition"
-            >
+            <Link to={`/household/${id}/add`}>
               Add Entry
             </Link>
           </div>
         </div>
 
         {data.entries.length === 0 ? (
-          <p className="text-gray-600 text-center py-8">
+          <p>
             No entries yet. Start tracking!
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
+          <div>
+            <table>
+              <thead>
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                  <th>
                     Type
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                  <th>
                     Value
                   </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                  <th>
                     Date
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody>
                 {data.entries.map((entry) => (
-                  <tr key={entry.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3">
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                          entry.entry_type === "water"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
+                  <tr key={entry.id}>
+                    <td>
+                      <span>
                         {entry.entry_type === "water"
                           ? "💧 Water"
                           : "⚡ Energy"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-800">
+                    <td>
                       {entry.value} {entry.entry_type === "water" ? "L" : "kWh"}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td>
                       {new Date(entry.recorded_at).toLocaleString()}
                     </td>
                   </tr>
