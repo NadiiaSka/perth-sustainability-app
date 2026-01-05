@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { householdApi, Household, usageApi, UsageEntry } from "../api/client";
-import { Leaf, Zap } from "lucide-react";
-import { Droplet } from "lucide-react";
+import { householdApi, Household } from "../api/client";
+import { Leaf, Zap, Droplet } from "lucide-react";
 
 function HomePage() {
   const [householdsWithData, setHouseholdsWithData] = useState<any[]>([]);
@@ -35,8 +34,6 @@ function HomePage() {
     }
   };
 
-  console.log(householdsWithData);
-
   if (loading) {
     return (
       <div>
@@ -45,6 +42,12 @@ function HomePage() {
     );
   }
 
+  const getScoreColor = (score: number) => {
+    if (score >= 49) return "text-green-600 bg-green-100";
+    if (score >= 25) return "text-yellow-600 bg-yellow-100";
+    return "text-red-600 bg-red-100";
+  };
+
   return (
     <div className="p-5">
       <div className="flex flex-col items-center">
@@ -52,9 +55,12 @@ function HomePage() {
           Monitor your household's water and energy usage, get personalized
           tips, and track your environmental impact with our Green Score system.
         </p>
-        <div className="px-3 py-2 mt-8 font-semibold text-white transition-all duration-200 bg-green-600 rounded-md hover:bg-green-500 active:scale-95">
-          <Link to="/register">Register Household</Link>
-        </div>
+        <Link
+          to="/register"
+          className="inline-block px-3 py-2 mt-8 font-semibold text-white transition-all duration-200 bg-green-600 rounded-md hover:bg-green-500 active:scale-95"
+        >
+          Register Household
+        </Link>
       </div>
 
       <div className="mt-8">
@@ -68,30 +74,25 @@ function HomePage() {
               <Link
                 key={household.id}
                 to={`/household/${household.id}`}
-                className="block p-4 mt-4 transition duration-300 ease-in-out bg-white border border-gray-400 delay-30 rounded-xl hover:shadow-lg"
+                className="block p-4 mt-4 transition duration-300 ease-in-out bg-white border border-gray-400 rounded-xl hover:shadow-lg"
               >
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex flex-col">
                     <strong>{household.name}</strong>
                     <span className="text-gray-600">
-                      {household.members} member
-                      {household.members !== 1 ? "s" : ""}
+                      {household.members} member{household.members !== 1 && "s"}
                     </span>
                   </div>
                   <div
-                    className={`flex gap-1 px-3 py-2 ${
-                      household.greenScore >= 49
-                        ? "text-green-600 bg-green-100"
-                        : household.greenScore >= 25
-                        ? "text-yellow-600 bg-yellow-100"
-                        : "text-red-600 bg-red-100"
-                    } rounded-md rounded-xl`}
+                    className={`flex gap-1 px-3 py-2 ${getScoreColor(
+                      household.greenScore
+                    )} rounded-xl`}
                   >
                     <Leaf />
                     <p className="font-semibold">{household.greenScore}</p>
                   </div>
                 </div>
-                <div className="text-gray-600 ">
+                <div className="text-gray-600">
                   <div className="flex justify-between">
                     <div className="flex items-center gap-1 mb-2">
                       <Droplet className="w-5 h-5 text-blue-600" />
