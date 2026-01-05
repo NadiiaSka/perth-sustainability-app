@@ -30,18 +30,19 @@ function HomePage() {
   }
 
   return (
-    <div>
-      <div>
-        <h1>Welcome to Sustainability Tracker</h1>
-        <p>
+    <div className="p-5">
+      <div className="flex flex-col items-center">
+        <p className="text-center">
           Monitor your household's water and energy usage, get personalized
           tips, and track your environmental impact with our Green Score system.
         </p>
-        <Link to="/register">Get Started</Link>
+        <div className="px-3 py-2 mt-8 font-semibold text-white bg-green-600 rounded-md">
+          <Link to="/register">Register Household</Link>
+        </div>
       </div>
 
-      <div>
-        <h2>Registered Households</h2>
+      <div className="mt-8">
+        <h2 className="font-semibold">Registered Households:</h2>
 
         {households.length === 0 ? (
           <p>No households registered yet. Be the first to start tracking!</p>

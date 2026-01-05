@@ -3,23 +3,25 @@ import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import AddUsagePage from "./pages/AddUsagePage";
+import { Leaf } from "lucide-react";
 
 function App() {
   return (
     <BrowserRouter
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
-      <div>
-        <nav>
-          <div>
-            <div>
-              <Link to="/">🌱 Sustainability Tracker</Link>
-              <Link to="/register">Register Household</Link>
+      <div className="container flex flex-col min-h-screen mx-auto bg-green-50">
+        <header className="m-5 mb-10">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="p-3 text-white bg-green-600 rounded-full">
+              <Leaf />
             </div>
-          </div>
-        </nav>
-
-        <main>
+            <p className="text-xl antialiased font-bold text-emerald-600">
+              Sustainability Tracker
+            </p>
+          </Link>
+        </header>
+        <main className="flex-1">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -27,8 +29,7 @@ function App() {
             <Route path="/household/:id/add" element={<AddUsagePage />} />
           </Routes>
         </main>
-
-        <footer>
+        <footer className="mb-5 text-center text-gray-600">
           <div>
             <p>
               © 2025 Sustainability Tracker - Track your environmental impact
