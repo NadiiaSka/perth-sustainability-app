@@ -10,7 +10,7 @@ function App() {
     <BrowserRouter
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
-      <div className="container flex flex-col min-h-screen mx-auto bg-green-50">
+      <div className="flex flex-col max-w-5xl min-h-screen mx-auto bg-green-50">
         <header className="m-5 mb-10">
           <Link to="/" className="flex items-center gap-2">
             <div className="p-3 text-white bg-green-600 rounded-full">
