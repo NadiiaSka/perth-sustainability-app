@@ -10,8 +10,8 @@ function App() {
     <BrowserRouter
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
-      <div className="flex flex-col max-w-5xl min-h-screen mx-auto bg-green-50">
-        <header className="m-5 mb-10">
+      <div className="flex flex-col max-w-5xl min-h-screen p-5 mx-auto bg-green-50">
+        <header className="my-5 mb-10">
           <Link to="/" className="flex items-center gap-2">
             <div className="p-3 text-white bg-green-600 rounded-full">
               <Leaf />
@@ -29,7 +29,7 @@ function App() {
             <Route path="/household/:id/add" element={<AddUsagePage />} />
           </Routes>
         </main>
-        <footer className="mb-5 text-center text-gray-600">
+        <footer className="my-5 text-center text-gray-600">
           <div>
             <p>
               © 2025 Sustainability Tracker - Track your environmental impact

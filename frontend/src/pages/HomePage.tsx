@@ -49,7 +49,7 @@ function HomePage() {
   };
 
   return (
-    <div className="p-5">
+    <div className="">
       <div className="flex flex-col items-center">
         <p className="text-center">
           Monitor your household's water and energy usage, get personalized
