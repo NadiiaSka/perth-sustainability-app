@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { householdApi, Household } from "../api/client";
 import { Leaf, Zap, Droplet } from "lucide-react";
+import { getScoreColor } from "../utils/helpers";
 
 function HomePage() {
   const [householdsWithData, setHouseholdsWithData] = useState<any[]>([]);
@@ -41,12 +42,6 @@ function HomePage() {
       </div>
     );
   }
-
-  const getScoreColor = (score: number) => {
-    if (score >= 49) return "text-green-600 bg-green-100";
-    if (score >= 25) return "text-yellow-600 bg-yellow-100";
-    return "text-red-600 bg-red-100";
-  };
 
   return (
     <div className="">

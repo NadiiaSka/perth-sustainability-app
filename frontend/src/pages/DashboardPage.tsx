@@ -11,6 +11,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { Award } from "lucide-react";
+import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
   const { id } = useParams<{ id: string }>();
@@ -67,37 +69,37 @@ function DashboardPage() {
   return (
     <div>
       <div>
-        <div>
+        <div className="flex items-center justify-between">
           <div>
-            <h1>
-              {data.household.name}
-            </h1>
-            <p>📍 {data.household.postcode}</p>
+            <strong className="text-xl">{data.household.name}</strong>
+            <p className="text-gray-600">
+              {data.household.members} member
+              {data.household.members !== 1 && "s"}
+            </p>
           </div>
-          <div>
-            <div>Green Score</div>
-            <div>
+          <div className="flex flex-col items-center gap-2 px-10 py-5 bg-white border border-gray-400 rounded-xl">
+            <div className="flex gap-3">
+              <Award className="text-green-600" />
+              <div className="text-gray-600">Green Score</div>
+            </div>
+
+            <div
+              className={
+                "text-4xl p-2 rounded-xl " + getScoreColor(data.greenScore)
+              }
+            >
               {data.greenScore}
             </div>
           </div>
         </div>
-
-        <div>
+        <div className="flex justify-between">
           <div>
-            <h3>
-              💧 Total Water
-            </h3>
-            <p>
-              {data.summary.water?.toFixed(1) || 0} L
-            </p>
+            <h3>💧 Total Water</h3>
+            <p>{data.summary.water?.toFixed(1) || 0} L</p>
           </div>
           <div>
-            <h3>
-              ⚡ Total Energy
-            </h3>
-            <p>
-              {data.summary.energy?.toFixed(1) || 0} kWh
-            </p>
+            <h3>⚡ Total Energy</h3>
+            <p>{data.summary.energy?.toFixed(1) || 0} kWh</p>
           </div>
         </div>
 
@@ -114,9 +116,7 @@ function DashboardPage() {
       </div>
 
       <div>
-        <h2>
-          💡 Personalized Tips
-        </h2>
+        <h2>💡 Personalized Tips</h2>
         <ul>
           {data.tips.map((tip, index) => (
             <li key={index}>
@@ -131,33 +131,21 @@ function DashboardPage() {
         <div>
           <h2>Recent Entries</h2>
           <div>
-            <button onClick={handleExport}>
-              Export CSV
-            </button>
-            <Link to={`/household/${id}/add`}>
-              Add Entry
-            </Link>
+            <button onClick={handleExport}>Export CSV</button>
+            <Link to={`/household/${id}/add`}>Add Entry</Link>
           </div>
         </div>
 
         {data.entries.length === 0 ? (
-          <p>
-            No entries yet. Start tracking!
-          </p>
+          <p>No entries yet. Start tracking!</p>
         ) : (
           <div>
             <table>
               <thead>
                 <tr>
-                  <th>
-                    Type
-                  </th>
-                  <th>
-                    Value
-                  </th>
-                  <th>
-                    Date
-                  </th>
+                  <th>Type</th>
+                  <th>Value</th>
+                  <th>Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -173,9 +161,7 @@ function DashboardPage() {
                     <td>
                       {entry.value} {entry.entry_type === "water" ? "L" : "kWh"}
                     </td>
-                    <td>
-                      {new Date(entry.recorded_at).toLocaleString()}
-                    </td>
+                    <td>{new Date(entry.recorded_at).toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
