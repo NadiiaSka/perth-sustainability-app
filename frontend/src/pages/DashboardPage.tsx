@@ -69,7 +69,7 @@ function DashboardPage() {
   return (
     <div>
       <div>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <strong className="text-xl">{data.household.name}</strong>
             <p className="text-gray-600">
@@ -77,7 +77,7 @@ function DashboardPage() {
               {data.household.members !== 1 && "s"}
             </p>
           </div>
-          <div className="flex flex-col items-center gap-2 px-10 py-5 bg-white border border-gray-400 rounded-xl">
+          <div className="flex flex-col items-center gap-2 px-5 py-5 bg-white border border-gray-200 rounded-xl md:px-10">
             <div className="flex gap-3">
               <Award className="text-green-600" />
               <div className="text-gray-600">Green Score</div>
@@ -92,14 +92,24 @@ function DashboardPage() {
             </div>
           </div>
         </div>
-        <div className="flex justify-between">
-          <div>
-            <h3>💧 Total Water</h3>
-            <p>{data.summary.water?.toFixed(1) || 0} L</p>
+        <div className="grid grid-cols-1 gap-4 my-6 md:grid-cols-2">
+          <div className="flex flex-col p-5 bg-blue-100 border-2 border-blue-200 rounded-lg">
+            <div>
+              <div>
+                <h3 className="text-lg">💧 Total Water Usage</h3>
+                <p className="mt-5 ml-1 text-4xl text-blue-500">
+                  {data.summary.water?.toFixed(1) || 0} L
+                </p>
+              </div>
+            </div>
+            <p className="mt-2 ml-1 text-gray-600">This month</p>
           </div>
-          <div>
-            <h3>⚡ Total Energy</h3>
-            <p>{data.summary.energy?.toFixed(1) || 0} kWh</p>
+          <div className="flex flex-col p-5 bg-yellow-100 border-2 border-yellow-200 rounded-lg">
+            <h3 className="text-lg">⚡ Total Energy</h3>
+            <p className="mt-5 ml-1 text-4xl text-yellow-500">
+              {data.summary.energy?.toFixed(1) || 0} kWh
+            </p>
+            <p className="mt-2 ml-1 text-gray-600">This month</p>
           </div>
         </div>
 
