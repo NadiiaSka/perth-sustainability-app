@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { householdApi, usageApi, DashboardData } from "../api/client";
 import {
+  LineChart,
+  Line,
   BarChart,
   Bar,
   XAxis,
@@ -11,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Award } from "lucide-react";
+import { Award, Download, Plus } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
@@ -61,9 +63,32 @@ function DashboardPage() {
     return <div>Household not found</div>;
   }
 
+  console.log(
+    data.entries
+      .filter((entry) => entry.entry_type === "water")
+      .map((entry) => ({
+        value: entry.value,
+        date: entry.recorded_at,
+      }))
+  );
+
+  const chartDataWater = data.entries
+    .filter((entry) => entry.entry_type === "water")
+    .map((entry) => ({
+      value: entry.value,
+      date: entry.recorded_at,
+    }));
+
+  const chartDataEnergy = data.entries
+    .filter((entry) => entry.entry_type === "energy")
+    .map((entry) => ({
+      value: entry.value,
+      date: entry.recorded_at,
+    }));
+
   const chartData = [
-    { name: "Water", value: data.summary.water || 0 },
-    { name: "Energy", value: data.summary.energy || 0 },
+    { name: "Water", Water: data.summary.water || 0, Energy: 0 },
+    { name: "Energy", Water: 0, Energy: data.summary.energy || 0 },
   ];
 
   return (
@@ -112,66 +137,155 @@ function DashboardPage() {
             <p className="mt-2 ml-1 text-gray-600">This month</p>
           </div>
         </div>
+        <div className="grid grid-cols-1 gap-5 my-6 md:grid-cols-2">
+          <div className="">
+            <h3 className="mb-4 text-lg font-semibold">
+              💧 Weekly Water Usage
+            </h3>
+            <ResponsiveContainer
+              width="100%"
+              height={400}
+              className="pt-8 pr-8 bg-white border border-gray-300 rounded-lg"
+            >
+              <LineChart data={chartDataWater}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="week" />
+                <YAxis domain={[500, "auto"]} />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="step"
+                  dataKey="value"
+                  name="Water (L)"
+                  stroke="#3b82f6"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="">
+            <h3 className="mb-4 text-lg font-semibold">
+              ⚡ Weekly Energy Usage
+            </h3>
+            <ResponsiveContainer
+              width="100%"
+              height={400}
+              className="pt-8 pr-8 bg-white border border-gray-300 rounded-lg"
+            >
+              <LineChart data={chartDataEnergy}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="week" />
+                <YAxis domain={[400, "auto"]} />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  name="Energy (kWh)"
+                  stroke="#facc15"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" fill="#10b981" />
-          </BarChart>
-        </ResponsiveContainer>
+        {/* <div className="my-6">
+          <h3 className="mb-4 text-lg font-semibold">
+            📊 Water vs Energy Usage
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="Water" fill="#3b82f6" name="Water (L)" />
+              <Bar dataKey="Energy" fill="#eab308" name="Energy (kWh)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>*/}
       </div>
 
-      <div>
-        <h2>💡 Personalized Tips</h2>
-        <ul>
+      <div className="p-5 my-6 bg-green-100 border border-green-300 rounded-lg">
+        <h2 className="text-lg font-semibold">💡 Personalized Tips</h2>
+        <p className="mt-1 text-gray-600">
+          Recommendations based on your usage patterns
+        </p>
+        <ul className="mt-4 space-y-3">
           {data.tips.map((tip, index) => (
-            <li key={index}>
-              <span>✓</span>
+            <li key={index} className="flex items-center gap-3">
+              <span className="px-2 py-0.5 text-white bg-green-500 rounded-full">
+                ✓
+              </span>
               <span>{tip}</span>
             </li>
           ))}
         </ul>
       </div>
 
-      <div>
-        <div>
-          <h2>Recent Entries</h2>
+      <div className="p-5 bg-white border rounded-xl">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <button onClick={handleExport}>Export CSV</button>
-            <Link to={`/household/${id}/add`}>Add Entry</Link>
+            <h2 className="text-lg font-semibold ">Recent Entries</h2>
+            <p className="text-gray-600">Your latest usage record</p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              onClick={handleExport}
+              className="flex justify-center gap-2 p-2 border rounded-lg hover:bg-gray-50"
+            >
+              <Download />
+              Export CSV
+            </button>
+            <Link
+              to={`/household/${id}/add`}
+              className="flex items-center justify-center gap-1 p-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
+            >
+              <Plus />
+              <div>Add Entry</div>
+            </Link>
           </div>
         </div>
 
         {data.entries.length === 0 ? (
-          <p>No entries yet. Start tracking!</p>
+          <p className="mt-4 text-gray-600">No entries yet. Start tracking!</p>
         ) : (
-          <div>
-            <table>
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full border-collapse">
               <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Value</th>
-                  <th>Date</th>
+                <tr className="border-b border-gray-300">
+                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
+                    Type
+                  </th>
+                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
+                    Value
+                  </th>
+                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
+                    Date
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {data.entries.map((entry) => (
-                  <tr key={entry.id}>
-                    <td>
-                      <span>
+                  <tr
+                    key={entry.id}
+                    className="transition-colors border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-3">
+                      <span className="flex items-center gap-2 font-medium">
                         {entry.entry_type === "water"
                           ? "💧 Water"
                           : "⚡ Energy"}
                       </span>
                     </td>
-                    <td>
+                    <td className="px-4 py-3">
                       {entry.value} {entry.entry_type === "water" ? "L" : "kWh"}
                     </td>
-                    <td>{new Date(entry.recorded_at).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {new Date(entry.recorded_at).toLocaleDateString()}{" "}
+                    </td>
                   </tr>
                 ))}
               </tbody>
