@@ -58,7 +58,7 @@ function AddUsagePage() {
                 }
                 className={
                   formData.entry_type === "water"
-                    ? "flex items-center justify-center w-full gap-3 p-2 border border-blue-400 rounded-lg bg-blue-50"
+                    ? "flex items-center justify-center w-full gap-3 p-2 border border-blue-400 rounded-lg bg-blue-50 shadow-md"
                     : "flex items-center justify-center w-full gap-3 p-2 border border-gray-300 rounded-lg bg-white"
                 }
               >
@@ -83,7 +83,7 @@ function AddUsagePage() {
                 }
                 className={
                   formData.entry_type === "energy"
-                    ? "flex items-center justify-center w-full gap-3 p-2 border border-yellow-400 rounded-lg bg-yellow-50"
+                    ? "flex items-center justify-center w-full gap-3 p-2 border border-yellow-400 rounded-lg bg-yellow-50 shadow-md"
                     : "flex items-center justify-center w-full gap-3 p-2 border border-gray-300 rounded-lg bg-white"
                 }
               >
@@ -169,6 +169,31 @@ function AddUsagePage() {
             </button>
           </div>
         </form>
+      </div>
+      <div className="grid grid-cols-1 gap-4 my-6 md:grid-cols-2">
+        <div className="flex flex-col p-4 border border-blue-200 rounded-xl bg-blue-50">
+          <div className="flex items-start gap-4 ">
+            <Droplet className="w-8 mt-1 text-blue-500" />
+            <div>
+              <h3 className="text-lg text-blue-900">Water Usage</h3>
+              <p className="text-sm text-blue-600">
+                Track consumption in litres. Average household uses 150-250L per
+                person daily.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col p-4 border-2 border-yellow-200 rounded-xl bg-yellow-50">
+          <div className="flex items-start gap-4">
+            <Zap className="w-8 mt-1 text-yellow-500" />
+            <div>
+              <h3 className="text-lg">Energy Usage</h3>
+              <p className="text-sm text-yellow-700">
+                Track consumption in kWh. Average household uses 8-10 kWh daily.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
