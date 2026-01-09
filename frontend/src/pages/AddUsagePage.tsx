@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { usageApi } from "../api/client";
-import { Droplet, Zap } from "lucide-react";
+import { ArrowLeft, Droplet, Zap } from "lucide-react";
 
 function AddUsagePage() {
   const { id } = useParams<{ id: string }>();
@@ -35,15 +35,25 @@ function AddUsagePage() {
   };
 
   return (
-    <div>
+    <div className="px-4 md:px-0">
+      <div className="flex items-center gap-2 mb-4 cursor-pointer md:mb-6">
+        <ArrowLeft className="w-5 h-5 text-gray-600 md:w-6 md:h-6" />
+        <Link
+          to={`/household/${id}`}
+          className="text-base font-semibold text-gray-600 md:text-lg hover:text-gray-800"
+        >
+          Back to Household
+        </Link>
+      </div>
+
       <div>
-        <h1 className="text-2xl font-bold ">Add Usage Entry</h1>
-        <p className="mb-6 text-gray-600">
+        <h1 className="text-xl font-bold md:text-2xl">Add Usage Entry</h1>
+        <p className="mb-4 text-sm text-gray-600 md:mb-6 md:text-base">
           Enter the details of your water or energy usage below.
         </p>
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-md p-6 bg-white border rounded-lg shadow-md md:max-w-4xl"
+          className="w-full p-4 bg-white border rounded-lg shadow-md md:p-6 md:max-w-2xl lg:max-w-4xl"
         >
           {error && <div>{error}</div>}
 
@@ -51,7 +61,7 @@ function AddUsagePage() {
             <label htmlFor="entry_type" className="text-gray-800">
               Entry Type
             </label>
-            <div className="flex justify-between gap-3 mt-2">
+            <div className="grid grid-cols-1 gap-3 mt-2 md:grid-cols-2">
               <button
                 onClick={(e) =>
                   setFormData({ ...formData, entry_type: "water" })
@@ -152,43 +162,47 @@ function AddUsagePage() {
             </p>
           </div>
 
-          <div className="flex justify-end gap-4 pt-5 mt-6 border-t">
+          <div className="flex flex-col-reverse gap-3 pt-4 mt-6 border-t sm:flex-row sm:justify-end sm:gap-4">
             <button
               type="button"
               onClick={() => navigate(`/household/${id}`)}
-              className="font-semibold"
+              className="w-full px-4 py-2 font-semibold text-gray-700 transition-colors border border-gray-300 rounded-lg sm:w-auto hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-white bg-blue-500 rounded-lg"
+              className="w-full px-4 py-2 font-semibold text-white transition-colors bg-blue-500 rounded-lg sm:w-auto hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {loading ? "Adding..." : "Add Entry"}
             </button>
           </div>
         </form>
       </div>
-      <div className="grid grid-cols-1 gap-4 my-6 md:grid-cols-2">
-        <div className="flex flex-col p-4 border border-blue-200 rounded-xl bg-blue-50">
-          <div className="flex items-start gap-4 ">
-            <Droplet className="w-8 mt-1 text-blue-500" />
+      <div className="grid max-w-full grid-cols-1 gap-4 mt-6 mb-8 md:grid-cols-2 lg:gap-6 md:max-w-2xl lg:max-w-4xl">
+        <div className="flex flex-col p-4 border border-blue-200 rounded-xl bg-blue-50 md:p-5">
+          <div className="flex items-start gap-3 md:gap-4">
+            <Droplet className="w-6 h-6 mt-1 text-blue-500 md:w-8 md:h-8" />
             <div>
-              <h3 className="text-lg text-blue-900">Water Usage</h3>
-              <p className="text-sm text-blue-600">
+              <h3 className="text-base font-semibold text-blue-900 md:text-lg">
+                Water Usage
+              </h3>
+              <p className="text-xs text-blue-600 md:text-sm">
                 Track consumption in litres. Average household uses 150-250L per
                 person daily.
               </p>
             </div>
           </div>
         </div>
-        <div className="flex flex-col p-4 border-2 border-yellow-200 rounded-xl bg-yellow-50">
-          <div className="flex items-start gap-4">
-            <Zap className="w-8 mt-1 text-yellow-500" />
+        <div className="flex flex-col p-4 border border-yellow-200 rounded-xl bg-yellow-50 md:p-5">
+          <div className="flex items-start gap-3 md:gap-4">
+            <Zap className="w-6 h-6 mt-1 text-yellow-600 md:w-8 md:h-8" />
             <div>
-              <h3 className="text-lg">Energy Usage</h3>
-              <p className="text-sm text-yellow-700">
+              <h3 className="text-base font-semibold text-yellow-900 md:text-lg">
+                Energy Usage
+              </h3>
+              <p className="text-xs text-yellow-700 md:text-sm">
                 Track consumption in kWh. Average household uses 8-10 kWh daily.
               </p>
             </div>
