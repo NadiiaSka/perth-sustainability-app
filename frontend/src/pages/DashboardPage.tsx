@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { householdApi, usageApi, DashboardData } from "../api/client";
 import {
+  LineChart,
+  Line,
   BarChart,
   Bar,
   XAxis,
@@ -61,9 +63,32 @@ function DashboardPage() {
     return <div>Household not found</div>;
   }
 
+  console.log(
+    data.entries
+      .filter((entry) => entry.entry_type === "water")
+      .map((entry) => ({
+        value: entry.value,
+        date: entry.recorded_at,
+      }))
+  );
+
+  const chartDataWater = data.entries
+    .filter((entry) => entry.entry_type === "water")
+    .map((entry) => ({
+      value: entry.value,
+      date: entry.recorded_at,
+    }));
+
+  const chartDataEnergy = data.entries
+    .filter((entry) => entry.entry_type === "energy")
+    .map((entry) => ({
+      value: entry.value,
+      date: entry.recorded_at,
+    }));
+
   const chartData = [
-    { name: "Water", value: data.summary.water || 0 },
-    { name: "Energy", value: data.summary.energy || 0 },
+    { name: "Water", Water: data.summary.water || 0, Energy: 0 },
+    { name: "Energy", Water: 0, Energy: data.summary.energy || 0 },
   ];
 
   return (
@@ -112,25 +137,88 @@ function DashboardPage() {
             <p className="mt-2 ml-1 text-gray-600">This month</p>
           </div>
         </div>
+        <div className="grid grid-cols-1 gap-5 my-6 md:grid-cols-2">
+          <div className="">
+            <h3 className="mb-4 text-lg font-semibold">
+              💧 Weekly Water Usage
+            </h3>
+            <ResponsiveContainer
+              width="100%"
+              height={400}
+              className="pt-8 pr-8 bg-white border border-gray-300 rounded-lg"
+            >
+              <LineChart data={chartDataWater}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="week" />
+                <YAxis domain={[500, "auto"]} />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="step"
+                  dataKey="value"
+                  name="Water (L)"
+                  stroke="#3b82f6"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="">
+            <h3 className="mb-4 text-lg font-semibold">
+              ⚡ Weekly Energy Usage
+            </h3>
+            <ResponsiveContainer
+              width="100%"
+              height={400}
+              className="pt-8 pr-8 bg-white border border-gray-300 rounded-lg"
+            >
+              <LineChart data={chartDataEnergy}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="week" />
+                <YAxis domain={[400, "auto"]} />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="value"
+                  name="Energy (kWh)"
+                  stroke="#facc15"
+                  activeDot={{ r: 8 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" fill="#10b981" />
-          </BarChart>
-        </ResponsiveContainer>
+        {/* <div className="my-6">
+          <h3 className="mb-4 text-lg font-semibold">
+            📊 Water vs Energy Usage
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="Water" fill="#3b82f6" name="Water (L)" />
+              <Bar dataKey="Energy" fill="#eab308" name="Energy (kWh)" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>*/}
       </div>
 
-      <div>
-        <h2>💡 Personalized Tips</h2>
-        <ul>
+      <div className="p-5 my-6 bg-green-100 border border-green-300 rounded-lg">
+        <h2 className="text-lg font-semibold">💡 Personalized Tips</h2>
+        <p className="mt-1 text-gray-600">
+          Recommendations based on your usage patterns
+        </p>
+        <ul className="mt-4 space-y-3">
           {data.tips.map((tip, index) => (
-            <li key={index}>
-              <span>✓</span>
+            <li key={index} className="flex items-center gap-3">
+              <span className="px-2 py-0.5 text-white bg-green-500 rounded-full">
+                ✓
+              </span>
               <span>{tip}</span>
             </li>
           ))}
@@ -138,7 +226,7 @@ function DashboardPage() {
       </div>
 
       <div>
-        <div>
+        <div className="flex items-center justify-between">
           <h2>Recent Entries</h2>
           <div>
             <button onClick={handleExport}>Export CSV</button>
