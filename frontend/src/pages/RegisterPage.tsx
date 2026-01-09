@@ -30,22 +30,27 @@ function RegisterPage() {
   return (
     <div>
       <div>
-        <h1>
-          Register Your Household
-        </h1>
+        <h1 className="mb-6 text-2xl font-bold">Register Your Household</h1>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          className="w-full max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm md:max-w-4xl"
+        >
           {error && (
-            <div>
+            <div className="p-3 mb-4 text-sm text-red-700 bg-red-100 border border-red-200 rounded-lg">
               {error}
             </div>
           )}
 
-          <div>
-            <label htmlFor="name">
+          <div className="mb-4">
+            <label
+              htmlFor="name"
+              className="block mb-2 text-sm font-semibold text-gray-700"
+            >
               Household Name
             </label>
             <input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               type="text"
               id="name"
               required
@@ -56,11 +61,16 @@ function RegisterPage() {
               placeholder="e.g., Smith Family"
             />
           </div>
-          <div>
-            <label htmlFor="members">
-              Number of occupants
+
+          <div className="mb-4">
+            <label
+              htmlFor="members"
+              className="block mb-2 text-sm font-semibold text-gray-700"
+            >
+              Number of Occupants
             </label>
             <input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               type="number"
               id="members"
               required
@@ -72,14 +82,19 @@ function RegisterPage() {
                 })
               }
               placeholder="e.g., 4"
+              min="1"
             />
           </div>
 
-          <div>
-            <label htmlFor="postcode">
+          <div className="mb-6">
+            <label
+              htmlFor="postcode"
+              className="block mb-2 text-sm font-semibold text-gray-700"
+            >
               Postcode
             </label>
             <input
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
               type="text"
               id="postcode"
               required
@@ -94,6 +109,7 @@ function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
+            className="w-full px-4 py-3 font-semibold text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             {loading ? "Registering..." : "Register Household"}
           </button>
