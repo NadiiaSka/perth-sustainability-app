@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Award, Download, Plus } from "lucide-react";
+import { ArrowLeft, Award, Download, Plus, Trash } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
@@ -48,6 +48,15 @@ function DashboardPage() {
       link.remove();
     } catch (error) {
       console.error("Export failed:", error);
+    }
+  };
+
+  const handleDelete = async (entryId: number) => {
+    try {
+      await usageApi.delete(entryId);
+      loadDashboard();
+    } catch (error) {
+      console.error("Delete failed:", error);
     }
   };
 
@@ -94,6 +103,16 @@ function DashboardPage() {
   return (
     <div>
       <div>
+        <div className="flex items-center gap-2 mb-4 cursor-pointer md:mb-6">
+          <ArrowLeft className="w-5 h-5 text-gray-600 md:w-6 md:h-6" />
+          <Link
+            to={`/`}
+            className="text-base font-semibold text-gray-600 md:text-lg hover:text-gray-800"
+          >
+            Back to Home page
+          </Link>
+        </div>
+
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <strong className="text-xl">{data.household.name}</strong>
@@ -265,6 +284,7 @@ function DashboardPage() {
                   <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
                     Date
                   </th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
@@ -285,6 +305,12 @@ function DashboardPage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {new Date(entry.recorded_at).toLocaleDateString()}{" "}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Trash
+                        className="w-5 h-5 text-gray-700 cursor-pointer hover:text-red-800"
+                        onClick={handleDelete.bind(null, entry.id)}
+                      />
                     </td>
                   </tr>
                 ))}
