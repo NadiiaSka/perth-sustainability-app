@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Award } from "lucide-react";
+import { Award, Download, Plus } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
@@ -225,41 +225,67 @@ function DashboardPage() {
         </ul>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between">
-          <h2>Recent Entries</h2>
+      <div className="p-5 bg-white border rounded-xl">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <button onClick={handleExport}>Export CSV</button>
-            <Link to={`/household/${id}/add`}>Add Entry</Link>
+            <h2 className="text-lg font-semibold ">Recent Entries</h2>
+            <p className="text-gray-600">Your latest usage record</p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              onClick={handleExport}
+              className="flex justify-center gap-2 p-2 border rounded-lg hover:bg-gray-50"
+            >
+              <Download />
+              Export CSV
+            </button>
+            <Link
+              to={`/household/${id}/add`}
+              className="flex items-center justify-center gap-1 p-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
+            >
+              <Plus />
+              <div>Add Entry</div>
+            </Link>
           </div>
         </div>
 
         {data.entries.length === 0 ? (
-          <p>No entries yet. Start tracking!</p>
+          <p className="mt-4 text-gray-600">No entries yet. Start tracking!</p>
         ) : (
-          <div>
-            <table>
+          <div className="mt-6 overflow-x-auto">
+            <table className="w-full border-collapse">
               <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Value</th>
-                  <th>Date</th>
+                <tr className="border-b border-gray-300">
+                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
+                    Type
+                  </th>
+                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
+                    Value
+                  </th>
+                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
+                    Date
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {data.entries.map((entry) => (
-                  <tr key={entry.id}>
-                    <td>
-                      <span>
+                  <tr
+                    key={entry.id}
+                    className="transition-colors border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-3">
+                      <span className="flex items-center gap-2 font-medium">
                         {entry.entry_type === "water"
                           ? "💧 Water"
                           : "⚡ Energy"}
                       </span>
                     </td>
-                    <td>
+                    <td className="px-4 py-3">
                       {entry.value} {entry.entry_type === "water" ? "L" : "kWh"}
                     </td>
-                    <td>{new Date(entry.recorded_at).toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {new Date(entry.recorded_at).toLocaleDateString()}{" "}
+                    </td>
                   </tr>
                 ))}
               </tbody>
