@@ -319,6 +319,15 @@ function DashboardPage() {
           </div>
         )}
       </div>
+      <div className="flex items-center gap-2 mt-4 cursor-pointer md:mt-6">
+        <ArrowLeft className="w-5 h-5 text-gray-600 md:w-6 md:h-6" />
+        <Link
+          to={`/`}
+          className="text-base font-semibold text-gray-600 md:text-lg hover:text-gray-800"
+        >
+          Back to Home page
+        </Link>
+      </div>
     </div>
   );
 }
