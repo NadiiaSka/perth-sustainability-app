@@ -31,12 +31,12 @@ function RegisterPage() {
   return (
     <div>
       <div>
-        <div className="flex items-center gap-2 mb-4 cursor-pointer md:mb-6">
-          <ArrowLeft className="w-5 h-5 text-gray-600 md:w-6 md:h-6" />
+        <div className="mb-4 md:mb-6">
           <Link
             to={`/`}
-            className="text-base font-semibold text-gray-600 md:text-lg hover:text-gray-800"
+            className="flex items-center gap-2 text-base font-semibold text-gray-600 md:text-lg hover:text-gray-800"
           >
+            <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
             Back to Home page
           </Link>
         </div>
