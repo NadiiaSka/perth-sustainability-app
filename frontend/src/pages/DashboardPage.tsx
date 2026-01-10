@@ -13,7 +13,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Award, Download, Plus } from "lucide-react";
+import { ArrowLeft, Award, Download, Plus, Trash } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
@@ -48,6 +48,15 @@ function DashboardPage() {
       link.remove();
     } catch (error) {
       console.error("Export failed:", error);
+    }
+  };
+
+  const handleDelete = async (entryId: number) => {
+    try {
+      await usageApi.delete(entryId);
+      loadDashboard();
+    } catch (error) {
+      console.error("Delete failed:", error);
     }
   };
 
@@ -94,6 +103,16 @@ function DashboardPage() {
   return (
     <div>
       <div>
+        <div className="mb-4 md:mb-6">
+          <Link
+            to={`/`}
+            className="flex items-center gap-2 text-base font-semibold text-gray-600 cursor-pointer md:text-lg hover:text-gray-800"
+          >
+            <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+            Back to Home page
+          </Link>
+        </div>
+
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <strong className="text-xl">{data.household.name}</strong>
@@ -189,23 +208,6 @@ function DashboardPage() {
             </ResponsiveContainer>
           </div>
         </div>
-
-        {/* <div className="my-6">
-          <h3 className="mb-4 text-lg font-semibold">
-            📊 Water vs Energy Usage
-          </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="Water" fill="#3b82f6" name="Water (L)" />
-              <Bar dataKey="Energy" fill="#eab308" name="Energy (kWh)" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>*/}
       </div>
 
       <div className="p-5 my-6 bg-green-100 border border-green-300 rounded-lg">
@@ -265,6 +267,7 @@ function DashboardPage() {
                   <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
                     Date
                   </th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
@@ -286,12 +289,27 @@ function DashboardPage() {
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {new Date(entry.recorded_at).toLocaleDateString()}{" "}
                     </td>
+                    <td className="px-4 py-3 text-right">
+                      <Trash
+                        className="w-5 h-5 text-gray-700 cursor-pointer hover:text-red-800"
+                        onClick={handleDelete.bind(null, entry.id)}
+                      />
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         )}
+      </div>
+      <div className="flex items-center gap-2 mt-4 cursor-pointer md:mt-6">
+        <ArrowLeft className="w-5 h-5 text-gray-600 md:w-6 md:h-6" />
+        <Link
+          to={`/`}
+          className="text-base font-semibold text-gray-600 md:text-lg hover:text-gray-800"
+        >
+          Back to Home page
+        </Link>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { householdApi } from "../api/client";
+import { ArrowLeft } from "lucide-react";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -30,8 +31,16 @@ function RegisterPage() {
   return (
     <div>
       <div>
+        <div className="mb-4 md:mb-6">
+          <Link
+            to={`/`}
+            className="flex items-center gap-2 text-base font-semibold text-gray-600 md:text-lg hover:text-gray-800"
+          >
+            <ArrowLeft className="w-5 h-5 md:w-6 md:h-6" />
+            Back to Home page
+          </Link>
+        </div>
         <h1 className="mb-6 text-2xl font-bold">Register Your Household</h1>
-
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm md:max-w-4xl"
