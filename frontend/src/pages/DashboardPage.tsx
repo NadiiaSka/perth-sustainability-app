@@ -11,7 +11,15 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { ArrowLeft, Award, Download, Pencil, Plus, Trash } from "lucide-react";
+import {
+  ArrowLeft,
+  Award,
+  Download,
+  FileText,
+  Pencil,
+  Plus,
+  Trash,
+} from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
@@ -154,89 +162,94 @@ function DashboardPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 gap-5 my-6 md:grid-cols-2">
-          <div className="">
-            <h3 className="mb-4 text-lg font-semibold">
-              💧 Weekly Water Usage
-            </h3>
-            <div className="p-4 bg-white border border-gray-300 rounded-lg">
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={getSortedUsageData("water")}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(date) =>
-                      new Date(date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    }
-                  />
-                  <YAxis domain={[0, "auto"]} />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="step"
-                    dataKey="value"
-                    name="Water (L)"
-                    stroke="#3b82f6"
-                    strokeWidth={3}
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+          {data.entries.some((entry) => entry.entry_type === "water") ? (
+            <div className="">
+              <h3 className="mb-4 text-lg font-semibold">
+                💧 Weekly Water Usage
+              </h3>
+              <div className="p-4 bg-white border border-gray-300 rounded-lg">
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={getSortedUsageData("water")}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(date) =>
+                        new Date(date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      }
+                    />
+                    <YAxis domain={[0, "auto"]} />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      type="step"
+                      dataKey="value"
+                      name="Water (L)"
+                      stroke="#3b82f6"
+                      strokeWidth={3}
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
-          <div className="">
-            <h3 className="mb-4 text-lg font-semibold">
-              ⚡ Weekly Energy Usage
-            </h3>
-            <div className="p-4 bg-white border border-gray-300 rounded-lg">
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={getSortedUsageData("energy")}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={(date) =>
-                      new Date(date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    }
-                  />
-                  <YAxis domain={[0, "auto"]} />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="step"
-                    dataKey="value"
-                    name="Energy (kWh)"
-                    stroke="#facc15"
-                    strokeWidth={3}
-                    activeDot={{ r: 8 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+          ) : null}
+          {data.entries.some((entry) => entry.entry_type === "energy") ? (
+            <div className="">
+              <h3 className="mb-4 text-lg font-semibold">
+                ⚡ Weekly Energy Usage
+              </h3>
+              <div className="p-4 bg-white border border-gray-300 rounded-lg">
+                <ResponsiveContainer width="100%" height={400}>
+                  <LineChart data={getSortedUsageData("energy")}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(date) =>
+                        new Date(date).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })
+                      }
+                    />
+                    <YAxis domain={[0, "auto"]} />
+                    <Tooltip />
+                    <Legend />
+                    <Line
+                      type="step"
+                      dataKey="value"
+                      name="Energy (kWh)"
+                      stroke="#facc15"
+                      strokeWidth={3}
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
       </div>
-
-      <div className="p-5 my-6 bg-green-100 border border-green-300 rounded-lg">
-        <h2 className="text-lg font-semibold">💡 Personalized Tips</h2>
-        <p className="mt-1 text-gray-600">
-          Recommendations based on your usage patterns
-        </p>
-        <ul className="mt-4 space-y-3">
-          {data.tips.map((tip, index) => (
-            <li key={index} className="flex items-center gap-3">
-              <span className="px-2 py-0.5 text-white bg-green-500 rounded-full">
-                ✓
-              </span>
-              <span>{tip}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {data.entries.length === 0 ? null : (
+        <div className="p-5 my-6 bg-green-100 border border-green-300 rounded-lg">
+          <h2 className="text-lg font-semibold">💡 Personalized Tips</h2>
+          <p className="mt-1 text-gray-600">
+            Recommendations based on your usage patterns
+          </p>
+          <ul className="mt-4 space-y-3">
+            {data.tips.map((tip, index) => (
+              <li key={index} className="flex items-center gap-3">
+                <span className="px-2 py-0.5 text-white bg-green-500 rounded-full">
+                  ✓
+                </span>
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="p-5 bg-white border rounded-xl">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -245,13 +258,16 @@ function DashboardPage() {
             <p className="text-gray-600">Your latest usage record</p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              onClick={handleExport}
-              className="flex justify-center gap-2 p-2 border rounded-lg hover:bg-gray-50"
-            >
-              <Download />
-              Export CSV
-            </button>
+            {data.entries.length === 0 ? null : (
+              <button
+                onClick={handleExport}
+                className="flex justify-center gap-2 p-2 border rounded-lg hover:bg-gray-50"
+              >
+                <Download />
+                Export CSV
+              </button>
+            )}
+
             <Link
               to={`/household/${id}/add`}
               className="flex items-center justify-center gap-1 p-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
@@ -263,7 +279,24 @@ function DashboardPage() {
         </div>
 
         {data.entries.length === 0 ? (
-          <p className="mt-4 text-gray-600">No entries yet. Start tracking!</p>
+          <div className="flex flex-col items-center justify-center py-12 mt-6 border-2 border-gray-200 border-dashed rounded-lg bg-gray-50">
+            <div className="p-4 mb-4 bg-gray-200 rounded-full">
+              <FileText className="w-12 h-12 text-gray-400" />
+            </div>
+            <h3 className="mb-2 text-lg font-semibold text-gray-700">
+              No entries yet
+            </h3>
+            <p className="mb-6 text-sm text-center text-gray-500">
+              Start tracking your water and energy usage to see insights
+            </p>
+            <Link
+              to={`/household/${id}/add`}
+              className="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600"
+            >
+              <Plus className="w-4 h-4" />
+              Add Your First Entry
+            </Link>
+          </div>
         ) : (
           <div className="mt-6 overflow-x-auto">
             <table className="w-full border-collapse">
