@@ -81,24 +81,14 @@ function DashboardPage() {
       }))
   );
 
-  const chartDataWater = data.entries
-    .filter((entry) => entry.entry_type === "water")
-    .map((entry) => ({
-      value: entry.value,
-      date: entry.recorded_at,
-    }));
-
-  const chartDataEnergy = data.entries
-    .filter((entry) => entry.entry_type === "energy")
-    .map((entry) => ({
-      value: entry.value,
-      date: entry.recorded_at,
-    }));
-
-  const chartData = [
-    { name: "Water", Water: data.summary.water || 0, Energy: 0 },
-    { name: "Energy", Water: 0, Energy: data.summary.energy || 0 },
-  ];
+  const chartData = (resources_type: string) =>
+    data.entries
+      .filter((entry) => entry.entry_type === resources_type)
+      .map((entry) => ({
+        value: entry.value,
+        date: entry.recorded_at,
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   return (
     <div>
@@ -161,51 +151,65 @@ function DashboardPage() {
             <h3 className="mb-4 text-lg font-semibold">
               💧 Weekly Water Usage
             </h3>
-            <ResponsiveContainer
-              width="100%"
-              height={400}
-              className="pt-8 pr-8 bg-white border border-gray-300 rounded-lg"
-            >
-              <LineChart data={chartDataWater}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="week" />
-                <YAxis domain={[500, "auto"]} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="step"
-                  dataKey="value"
-                  name="Water (L)"
-                  stroke="#3b82f6"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="p-4 bg-white border border-gray-300 rounded-lg">
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={chartData("water")}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(date) =>
+                      new Date(date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }
+                  />
+                  <YAxis domain={[0, "auto"]} />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="step"
+                    dataKey="value"
+                    name="Water (L)"
+                    stroke="#3b82f6"
+                    strokeWidth={3}
+                    activeDot={{ r: 8 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
           <div className="">
             <h3 className="mb-4 text-lg font-semibold">
               ⚡ Weekly Energy Usage
             </h3>
-            <ResponsiveContainer
-              width="100%"
-              height={400}
-              className="pt-8 pr-8 bg-white border border-gray-300 rounded-lg"
-            >
-              <LineChart data={chartDataEnergy}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="week" />
-                <YAxis domain={[400, "auto"]} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  name="Energy (kWh)"
-                  stroke="#facc15"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="p-4 bg-white border border-gray-300 rounded-lg">
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={chartData("energy")}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(date) =>
+                      new Date(date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }
+                  />
+                  <YAxis domain={[0, "auto"]} />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="step"
+                    dataKey="value"
+                    name="Energy (kWh)"
+                    stroke="#facc15"
+                    strokeWidth={3}
+                    activeDot={{ r: 8 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
       </div>
