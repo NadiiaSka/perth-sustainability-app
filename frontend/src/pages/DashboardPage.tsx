@@ -4,8 +4,6 @@ import { householdApi, usageApi, DashboardData } from "../api/client";
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,7 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { ArrowLeft, Award, Download, Plus, Trash } from "lucide-react";
+import { ArrowLeft, Award, Download, Pencil, Plus, Trash } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
@@ -56,7 +54,16 @@ function DashboardPage() {
       await usageApi.delete(entryId);
       loadDashboard();
     } catch (error) {
-      console.error("Delete failed:", error);
+      console.error("Delete failed: ", error);
+    }
+  };
+
+  const handleUpdate = async (entryId: number, updatedData?: any) => {
+    try {
+      await usageApi.update(entryId, updatedData);
+      loadDashboard();
+    } catch (error) {
+      console.error("Update failed: ", error);
     }
   };
 
@@ -81,7 +88,7 @@ function DashboardPage() {
       }))
   );
 
-  const chartData = (resources_type: string) =>
+  const getSortedUsageData = (resources_type: string) =>
     data.entries
       .filter((entry) => entry.entry_type === resources_type)
       .map((entry) => ({
@@ -153,7 +160,7 @@ function DashboardPage() {
             </h3>
             <div className="p-4 bg-white border border-gray-300 rounded-lg">
               <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={chartData("water")}>
+                <LineChart data={getSortedUsageData("water")}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     dataKey="date"
@@ -185,7 +192,7 @@ function DashboardPage() {
             </h3>
             <div className="p-4 bg-white border border-gray-300 rounded-lg">
               <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={chartData("energy")}>
+                <LineChart data={getSortedUsageData("energy")}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
                     dataKey="date"
@@ -293,11 +300,23 @@ function DashboardPage() {
                     <td className="px-4 py-3 text-sm text-gray-600">
                       {new Date(entry.recorded_at).toLocaleDateString()}{" "}
                     </td>
-                    <td className="px-4 py-3 text-right">
-                      <Trash
-                        className="w-5 h-5 text-gray-700 cursor-pointer hover:text-red-800"
-                        onClick={handleDelete.bind(null, entry.id)}
-                      />
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleUpdate(entry.id)}
+                          className="p-2 transition-colors rounded-full hover:bg-blue-50"
+                          title="Edit"
+                        >
+                          <Pencil className="w-4 h-4 text-blue-600" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(entry.id)}
+                          className="p-2 transition-colors rounded-full hover:bg-red-50"
+                          title="Delete"
+                        >
+                          <Trash className="w-4 h-4 text-red-600" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

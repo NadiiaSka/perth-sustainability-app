@@ -49,6 +49,8 @@ export const usageApi = {
     recorded_at?: string;
   }) => api.post<UsageEntry>("/usage", data),
   delete: (id: number) => api.delete(`/usage/${id}`),
+  update: (id: number, data: Partial<UsageEntry>) =>
+    api.put<UsageEntry>(`/usage/${id}`, data),
   exportCsv: (householdId: number) =>
     api.get(`/usage/export/${householdId}`, { responseType: "blob" }),
   importCsv: (householdId: number, csvData: string) =>

@@ -59,6 +59,41 @@ router.delete("/:id", async (req: Request, res: Response) => {
   }
 });
 
+//Update usage entry
+router.put("/:id", async (req: Request, res: Response) => {
+  const pool: Pool = req.app.locals.db;
+  const { id } = req.params;
+  const { entry_type, value, recorded_at } = req.body;
+
+  try {
+    // First, get the existing entry to preserve the date if needed
+    const existingEntry = await pool.query(
+      "SELECT recorded_at FROM usage_entries WHERE id = $1",
+      [id]
+    );
+
+    if (existingEntry.rows.length === 0) {
+      return res.status(404).json({ error: "Entry not found" });
+    }
+
+    // Use provided date or keep existing date
+    const timestamp = recorded_at || existingEntry.rows[0].recorded_at;
+
+    const result = await pool.query(
+      `UPDATE usage_entries
+       SET entry_type = $1, value = $2, recorded_at = $3
+       WHERE id = $4
+       RETURNING *`,
+      [entry_type, parseFloat(value), timestamp, id]
+    );
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating entry:", error);
+    res.status(500).json({ error: "Failed to update entry" });
+  }
+});
+
 // GET export CSV for household
 router.get("/export/:household_id", async (req: Request, res: Response) => {
   const pool: Pool = req.app.locals.db;
