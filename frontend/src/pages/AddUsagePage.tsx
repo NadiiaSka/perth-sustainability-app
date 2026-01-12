@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { usageApi } from "../api/client";
 import { ArrowLeft, Droplet, Zap } from "lucide-react";
 
 function AddUsagePage() {
-  const { id } = useParams<{ id: string }>();
+  const { id, entryId } = useParams();
+  const isEditMode = !!entryId;
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     entry_type: "water" as "water" | "energy",
@@ -14,21 +16,57 @@ function AddUsagePage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (isEditMode && entryId) {
+      setLoading(true);
+      const loadEntry = async () => {
+        try {
+          const response = await usageApi.getById(Number(entryId));
+          // Convert ISO date to datetime-local format (yyyy-MM-ddThh:mm)
+          const dateValue = response.data.recorded_at
+            ? new Date(response.data.recorded_at).toISOString().slice(0, 16)
+            : "";
+          setFormData({
+            entry_type: response.data.entry_type,
+            value: String(response.data.value),
+            recorded_at: dateValue,
+          });
+        } catch (err: any) {
+          setError(err.response?.data?.error || "Failed to load entry");
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadEntry();
+    }
+  }, [entryId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      await usageApi.create({
-        household_id: Number(id),
-        entry_type: formData.entry_type,
-        value: parseFloat(formData.value),
-        recorded_at: formData.recorded_at || undefined,
-      });
+      if (isEditMode && entryId) {
+        await usageApi.update(Number(entryId), {
+          entry_type: formData.entry_type,
+          value: parseFloat(formData.value),
+          recorded_at: formData.recorded_at || undefined,
+        });
+      } else {
+        await usageApi.create({
+          household_id: Number(id),
+          entry_type: formData.entry_type,
+          value: parseFloat(formData.value),
+          recorded_at: formData.recorded_at || undefined,
+        });
+      }
       navigate(`/household/${id}`);
     } catch (err: any) {
-      setError(err.response?.data?.error || "Failed to add entry");
+      setError(
+        err.response?.data?.error ||
+          `Failed to ${isEditMode ? "update" : "add"} entry`
+      );
     } finally {
       setLoading(false);
     }
@@ -47,9 +85,13 @@ function AddUsagePage() {
       </div>
 
       <div>
-        <h1 className="text-xl font-bold md:text-2xl">Add Usage Entry</h1>
+        <h1 className="text-xl font-bold md:text-2xl">
+          {isEditMode ? "Edit Usage Entry" : "Add Usage Entry"}
+        </h1>
         <p className="mb-4 text-sm text-gray-600 md:mb-6 md:text-base">
-          Enter the details of your water or energy usage below.
+          {isEditMode
+            ? "Edit the details of your water or energy usage below."
+            : "Enter the details of your water or energy usage below."}
         </p>
         <form
           onSubmit={handleSubmit}
@@ -175,7 +217,13 @@ function AddUsagePage() {
               disabled={loading}
               className="w-full px-4 py-2 font-semibold text-white transition-colors bg-blue-500 rounded-lg sm:w-auto hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              {loading ? "Adding..." : "Add Entry"}
+              {loading
+                ? isEditMode
+                  ? "Editing..."
+                  : "Adding..."
+                : isEditMode
+                ? "Edit Entry"
+                : "Add Entry"}
             </button>
           </div>
         </form>
