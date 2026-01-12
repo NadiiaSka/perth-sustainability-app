@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { householdApi, usageApi, DashboardData } from "../api/client";
 import {
   LineChart,
@@ -24,6 +24,7 @@ import { getScoreColor } from "../utils/helpers";
 
 function DashboardPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -66,13 +67,8 @@ function DashboardPage() {
     }
   };
 
-  const handleUpdate = async (entryId: number, updatedData?: any) => {
-    try {
-      await usageApi.update(entryId, updatedData);
-      loadDashboard();
-    } catch (error) {
-      console.error("Update failed: ", error);
-    }
+  const handleEdit = (entryId: number) => {
+    navigate(`/household/${id}/edit/${entryId}`);
   };
 
   if (loading) {
@@ -86,15 +82,6 @@ function DashboardPage() {
   if (!data) {
     return <div>Household not found</div>;
   }
-
-  console.log(
-    data.entries
-      .filter((entry) => entry.entry_type === "water")
-      .map((entry) => ({
-        value: entry.value,
-        date: entry.recorded_at,
-      }))
-  );
 
   const getSortedUsageData = (resources_type: string) =>
     data.entries
@@ -336,7 +323,7 @@ function DashboardPage() {
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => handleUpdate(entry.id)}
+                          onClick={() => handleEdit(entry.id)}
                           className="p-2 transition-colors rounded-full hover:bg-blue-50"
                           title="Edit"
                         >

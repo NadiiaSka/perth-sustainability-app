@@ -5,6 +5,25 @@ import { stringify } from "csv-stringify/sync";
 
 const router = Router();
 
+//Get usage entry by ID
+router.get("/:id", async (req: Request, res: Response) => {
+  const pool: Pool = req.app.locals.db;
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      "SELECT * FROM usage_entries WHERE id = $1",
+      [id]
+    );
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Entry not found" });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error fetching usage entry:", error);
+    res.status(500).json({ error: "Failed to fetch usage entry" });
+  }
+});
+
 // POST add usage entry
 router.post("/", async (req: Request, res: Response) => {
   const pool: Pool = req.app.locals.db;

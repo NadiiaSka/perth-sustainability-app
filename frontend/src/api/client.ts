@@ -48,6 +48,7 @@ export const usageApi = {
     value: number;
     recorded_at?: string;
   }) => api.post<UsageEntry>("/usage", data),
+  getById: (id: number) => api.get<UsageEntry>(`/usage/${id}`),
   delete: (id: number) => api.delete(`/usage/${id}`),
   update: (id: number, data: Partial<UsageEntry>) =>
     api.put<UsageEntry>(`/usage/${id}`, data),
