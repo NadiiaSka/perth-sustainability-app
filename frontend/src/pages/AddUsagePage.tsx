@@ -105,6 +105,7 @@ function AddUsagePage() {
             </label>
             <div className="grid grid-cols-1 gap-3 mt-2 md:grid-cols-2">
               <button
+                type="button"
                 onClick={(e) =>
                   setFormData({ ...formData, entry_type: "water" })
                 }
@@ -130,6 +131,7 @@ function AddUsagePage() {
                 </div>
               </button>
               <button
+                type="button"
                 onClick={(e) =>
                   setFormData({ ...formData, entry_type: "energy" })
                 }
