@@ -134,7 +134,7 @@ function DashboardPage() {
               <div>
                 <h3 className="text-lg">💧 Total Water Usage</h3>
                 <p className="mt-5 ml-1 text-4xl text-blue-500">
-                  {data.summary.water?.toFixed(1) || 0} L
+                  {data.summary.water || 0} L
                 </p>
               </div>
             </div>
@@ -143,7 +143,7 @@ function DashboardPage() {
           <div className="flex flex-col p-5 bg-yellow-100 border-2 border-yellow-200 rounded-lg">
             <h3 className="text-lg">⚡ Total Energy</h3>
             <p className="mt-5 ml-1 text-4xl text-yellow-500">
-              {data.summary.energy?.toFixed(1) || 0} kWh
+              {data.summary.energy || 0} kWh
             </p>
             <p className="mt-2 ml-1 text-gray-600">This month</p>
           </div>

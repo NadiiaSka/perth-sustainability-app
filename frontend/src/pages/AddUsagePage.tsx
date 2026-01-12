@@ -179,7 +179,7 @@ function AddUsagePage() {
                   setFormData({ ...formData, value: e.target.value || "" })
                 }
                 placeholder={
-                  formData.entry_type === "water" ? "e.g., 150" : "e.g., 12.5"
+                  formData.entry_type === "water" ? "e.g., 150" : "e.g., 125"
                 }
               />
               <span className="absolute font-medium text-gray-600 -translate-y-1/2 right-3 top-1/2">
