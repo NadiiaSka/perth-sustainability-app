@@ -5,7 +5,11 @@ import { ArrowLeft } from "lucide-react";
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    members: number | "";
+    postcode: string;
+  }>({
     name: "",
     members: 1,
     postcode: "",
@@ -87,7 +91,8 @@ function RegisterPage() {
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  members: parseInt(e.target.value) || 0,
+                  members:
+                    e.target.value === "" ? "" : parseInt(e.target.value),
                 })
               }
               placeholder="e.g., 4"
