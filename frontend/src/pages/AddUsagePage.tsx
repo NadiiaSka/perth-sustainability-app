@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { usageApi } from "../api/client";
-import { ArrowLeft, Droplet, Zap } from "lucide-react";
+import { ArrowLeft, Calendar, Droplet, Zap } from "lucide-react";
 
 function AddUsagePage() {
   const { id, entryId } = useParams();
   const isEditMode = !!entryId;
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -105,6 +106,7 @@ function AddUsagePage() {
             </label>
             <div className="grid grid-cols-1 gap-3 mt-2 md:grid-cols-2">
               <button
+                type="button"
                 onClick={(e) =>
                   setFormData({ ...formData, entry_type: "water" })
                 }
@@ -130,6 +132,7 @@ function AddUsagePage() {
                 </div>
               </button>
               <button
+                type="button"
                 onClick={(e) =>
                   setFormData({ ...formData, entry_type: "energy" })
                 }
@@ -177,7 +180,7 @@ function AddUsagePage() {
                   setFormData({ ...formData, value: e.target.value || "" })
                 }
                 placeholder={
-                  formData.entry_type === "water" ? "e.g., 150" : "e.g., 12.5"
+                  formData.entry_type === "water" ? "e.g., 150" : "e.g., 125"
                 }
               />
               <span className="absolute font-medium text-gray-600 -translate-y-1/2 right-3 top-1/2">
@@ -186,19 +189,27 @@ function AddUsagePage() {
             </div>
           </div>
 
-          <div>
+          <div className="mb-4">
             <label className="block mb-1 text-gray-800" htmlFor="recorded_at">
               Date & Time <span className="text-gray-600">(Optional)</span>
             </label>
-            <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-transparent"
-              type="datetime-local"
-              id="recorded_at"
-              value={formData.recorded_at}
-              onChange={(e) =>
-                setFormData({ ...formData, recorded_at: e.target.value })
-              }
-            />
+            <div className="relative">
+              <Calendar
+                className="absolute w-5 h-5 text-blue-400 transition-colors -translate-y-1/2 cursor-pointer left-3 top-1/2 hover:text-blue-600"
+                onClick={() => dateInputRef.current?.showPicker()}
+              />
+              <input
+                ref={dateInputRef}
+                className="w-full py-2 pl-10 pr-3 text-gray-800 bg-gray-50 border border-gray-300 cursor-pointer rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-transparent focus:bg-white [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer hover:border-blue-400 hover:bg-white transition-colors"
+                type="datetime-local"
+                id="recorded_at"
+                max={new Date().toISOString().slice(0, 16)}
+                value={formData.recorded_at}
+                onChange={(e) =>
+                  setFormData({ ...formData, recorded_at: e.target.value })
+                }
+              />
+            </div>
             <p className="mt-1 text-sm text-gray-600">
               Leave blank to use current date and time
             </p>
