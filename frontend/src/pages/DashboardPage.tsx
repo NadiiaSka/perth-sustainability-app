@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import {
   ArrowLeft,
+  ArrowUpDown,
   Award,
   Download,
   FileText,
@@ -27,6 +28,7 @@ function DashboardPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
     loadDashboard();
@@ -82,6 +84,17 @@ function DashboardPage() {
   if (!data) {
     return <div>Household not found</div>;
   }
+
+  const toggleSort = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const sortedEntries =
+    data?.entries.slice().sort((a, b) => {
+      const dateA = new Date(a.recorded_at).getTime();
+      const dateB = new Date(b.recorded_at).getTime();
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    }) || [];
 
   const getSortedUsageData = (resources_type: string) =>
     data.entries
@@ -319,14 +332,20 @@ function DashboardPage() {
                   <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
                     Value
                   </th>
-                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
-                    Date
+                  <th
+                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50"
+                    onClick={toggleSort}
+                  >
+                    <div className="flex items-center gap-2">
+                      Date
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
                   </th>
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {data.entries.map((entry) => (
+                {sortedEntries.map((entry) => (
                   <tr
                     key={entry.id}
                     className="transition-colors border-b border-gray-200 hover:bg-gray-50"
