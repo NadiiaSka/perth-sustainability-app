@@ -5,7 +5,11 @@ import { ArrowLeft } from "lucide-react";
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    members: number | "";
+    postcode: string;
+  }>({
     name: "",
     members: 1,
     postcode: "",
@@ -56,7 +60,7 @@ function RegisterPage() {
               htmlFor="name"
               className="block mb-2 text-sm font-semibold text-gray-700"
             >
-              Household Name
+              Household Name <span className="text-red-500">*</span>
             </label>
             <input
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -76,7 +80,7 @@ function RegisterPage() {
               htmlFor="members"
               className="block mb-2 text-sm font-semibold text-gray-700"
             >
-              Number of Occupants
+              Number of Occupants <span className="text-red-500">*</span>
             </label>
             <input
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -87,7 +91,8 @@ function RegisterPage() {
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  members: parseInt(e.target.value) || 0,
+                  members:
+                    e.target.value === "" ? "" : parseInt(e.target.value),
                 })
               }
               placeholder="e.g., 4"
@@ -100,7 +105,7 @@ function RegisterPage() {
               htmlFor="postcode"
               className="block mb-2 text-sm font-semibold text-gray-700"
             >
-              Postcode
+              Postcode <span className="text-red-500">*</span>
             </label>
             <input
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -115,13 +120,15 @@ function RegisterPage() {
             />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full px-4 py-3 font-semibold text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {loading ? "Registering..." : "Register Household"}
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-8 py-2 font-semibold text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {loading ? "Registering..." : "Register Household"}
+            </button>
+          </div>
         </form>
       </div>
     </div>
