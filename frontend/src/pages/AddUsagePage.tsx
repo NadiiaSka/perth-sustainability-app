@@ -203,7 +203,11 @@ function AddUsagePage() {
                 className="w-full py-2 pl-10 pr-3 text-gray-800 bg-gray-50 border border-gray-300 cursor-pointer rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-transparent focus:bg-white [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer hover:border-blue-400 hover:bg-white transition-colors"
                 type="datetime-local"
                 id="recorded_at"
-                max={new Date().toISOString().slice(0, 16)}
+                max={new Date(
+                  Date.now() - new Date().getTimezoneOffset() * 60000
+                )
+                  .toISOString()
+                  .slice(0, 16)}
                 value={formData.recorded_at}
                 onChange={(e) =>
                   setFormData({ ...formData, recorded_at: e.target.value })
