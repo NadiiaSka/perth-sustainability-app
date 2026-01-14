@@ -87,7 +87,7 @@ function DashboardPage() {
     data.entries
       .filter((entry) => entry.entry_type === resources_type)
       .map((entry) => ({
-        value: entry.value,
+        value: Number(entry.value),
         date: entry.recorded_at,
       }))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -167,8 +167,20 @@ function DashboardPage() {
                         })
                       }
                     />
-                    <YAxis domain={[0, "auto"]} />
-                    <Tooltip />
+                    <YAxis
+                      domain={[
+                        0,
+                        (dataMax: number) => Math.ceil(dataMax * 1.1),
+                      ]}
+                      allowDecimals={false}
+                      tickFormatter={(value) => Math.round(value).toString()}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => [
+                        Math.round(value),
+                        "Water (L)",
+                      ]}
+                    />
                     <Legend />
                     <Line
                       type="step"
@@ -201,8 +213,20 @@ function DashboardPage() {
                         })
                       }
                     />
-                    <YAxis domain={[0, "auto"]} />
-                    <Tooltip />
+                    <YAxis
+                      domain={[
+                        0,
+                        (dataMax: number) => Math.ceil(dataMax * 1.1),
+                      ]}
+                      allowDecimals={false}
+                      tickFormatter={(value) => Math.round(value).toString()}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => [
+                        Math.round(value),
+                        "Energy (kWh)",
+                      ]}
+                    />
                     <Legend />
                     <Line
                       type="step"
