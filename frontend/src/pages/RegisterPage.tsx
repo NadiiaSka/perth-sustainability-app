@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { householdApi } from "../api/client";
 import { ArrowLeft } from "lucide-react";
+import FormInput from "../components/FormInput";
+import Button from "../components/Button";
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -23,7 +25,10 @@ function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await householdApi.create(formData);
+      const response = await householdApi.create({
+        ...formData,
+        members: formData.members || 1,
+      });
       navigate(`/household/${response.data.id}`);
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to register household");
@@ -56,78 +61,51 @@ function RegisterPage() {
           )}
 
           <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block mb-2 text-sm font-semibold text-gray-700"
-            >
-              Household Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              type="text"
-              id="name"
-              required
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              placeholder="e.g., Smith Family"
-            />
+            {FormInput({
+              label: "Household Name",
+              type: "text",
+              value: formData.name,
+              onChange: (value: string) =>
+                setFormData({ ...formData, name: value }),
+              placeholder: "e.g., Smith Family",
+              required: true,
+            })}
           </div>
 
           <div className="mb-4">
-            <label
-              htmlFor="members"
-              className="block mb-2 text-sm font-semibold text-gray-700"
-            >
-              Number of Occupants <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              type="number"
-              id="members"
-              required
-              value={formData.members}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  members:
-                    e.target.value === "" ? "" : parseInt(e.target.value),
-                })
-              }
-              placeholder="e.g., 4"
-              min="1"
-            />
+            {FormInput({
+              label: "Number of Occupants",
+              type: "number",
+              value: formData.members,
+              onChange: (value: string) =>
+                setFormData({ ...formData, members: Number(value) }),
+              placeholder: "e.g., 4",
+              required: true,
+              min: "1",
+            })}
           </div>
 
           <div className="mb-6">
-            <label
-              htmlFor="postcode"
-              className="block mb-2 text-sm font-semibold text-gray-700"
-            >
-              Postcode <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              type="text"
-              id="postcode"
-              required
-              value={formData.postcode}
-              onChange={(e) =>
-                setFormData({ ...formData, postcode: e.target.value })
-              }
-              placeholder="e.g., 6000"
-            />
+            {FormInput({
+              label: "Postcode",
+              type: "number",
+              value: formData.postcode,
+              onChange: (value: string) =>
+                setFormData({ ...formData, postcode: value }),
+              placeholder: "e.g., 6000",
+              required: true,
+            })}
           </div>
 
           <div className="flex justify-center">
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-8 py-2 font-semibold text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            <Button
+              variant="primary"
+              size="md"
+              loading={loading}
+              fullWidth={false}
             >
               {loading ? "Registering..." : "Register Household"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

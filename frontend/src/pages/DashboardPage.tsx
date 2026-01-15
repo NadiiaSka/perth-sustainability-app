@@ -21,6 +21,7 @@ import {
   Trash,
 } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
+import Button from "../components/Button";
 
 function DashboardPage() {
   const { id } = useParams<{ id: string }>();
@@ -246,18 +247,15 @@ function DashboardPage() {
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             {data.entries.length === 0 ? null : (
-              <button
-                onClick={handleExport}
-                className="flex justify-center gap-2 p-2 border rounded-lg hover:bg-gray-50"
-              >
+              <Button variant="secondary" onClick={handleExport}>
                 <Download />
-                Export CSV
-              </button>
+                <span>Export CSV</span>
+              </Button>
             )}
 
             <Link
               to={`/household/${id}/add`}
-              className="flex items-center justify-center gap-1 p-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
+              className="flex items-center justify-center gap-1 p-2 text-white bg-green-600 rounded-lg hover:bg-green-500"
             >
               <Plus />
               <div>Add Entry</div>
@@ -278,7 +276,7 @@ function DashboardPage() {
             </p>
             <Link
               to={`/household/${id}/add`}
-              className="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600"
+              className="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-green-600 rounded-lg hover:bg-green-500"
             >
               <Plus className="w-4 h-4" />
               Add Your First Entry
