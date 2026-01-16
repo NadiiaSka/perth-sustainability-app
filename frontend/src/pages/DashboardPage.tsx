@@ -2,16 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { householdApi, usageApi, DashboardData } from "../api/client";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import {
   ArrowLeft,
   ArrowUpDown,
   Award,
@@ -22,6 +12,9 @@ import {
   Trash,
 } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
+import Button from "../components/Button";
+import UsageChart from "../components/UsageChart";
+import SummaryCard from "../components/SummaryCard";
 
 function DashboardPage() {
   const { id } = useParams<{ id: string }>();
@@ -142,117 +135,39 @@ function DashboardPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4 my-6 md:grid-cols-2">
-          <div className="flex flex-col p-5 bg-blue-100 border-2 border-blue-200 rounded-lg">
-            <div>
-              <div>
-                <h3 className="text-lg">💧 Total Water Usage</h3>
-                <p className="mt-5 ml-1 text-4xl text-blue-500">
-                  {data.summary.water || 0} L
-                </p>
-              </div>
-            </div>
-            <p className="mt-2 ml-1 text-gray-600">This month</p>
-          </div>
-          <div className="flex flex-col p-5 bg-yellow-100 border-2 border-yellow-200 rounded-lg">
-            <h3 className="text-lg">⚡ Total Energy</h3>
-            <p className="mt-5 ml-1 text-4xl text-yellow-500">
-              {data.summary.energy || 0} kWh
-            </p>
-            <p className="mt-2 ml-1 text-gray-600">This month</p>
-          </div>
+          <SummaryCard
+            title="Total Water Usage"
+            value={data.summary.water || 0}
+            unit="L"
+            icon="💧"
+            bgColor="bg-blue-100"
+            textColor="text-blue-500"
+          />
+          <SummaryCard
+            title="Total Energy"
+            value={data.summary.energy || 0}
+            unit="kWh"
+            icon="⚡"
+            bgColor="bg-yellow-100"
+            textColor="text-yellow-500"
+          />
         </div>
         <div className="grid grid-cols-1 gap-5 my-6 md:grid-cols-2">
           {data.entries.some((entry) => entry.entry_type === "water") ? (
-            <div className="">
-              <h3 className="mb-4 text-lg font-semibold">
-                💧 Weekly Water Usage
-              </h3>
-              <div className="p-4 bg-white border border-gray-300 rounded-lg">
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={getSortedUsageData("water")}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={(date) =>
-                        new Date(date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })
-                      }
-                    />
-                    <YAxis
-                      domain={[
-                        0,
-                        (dataMax: number) => Math.ceil(dataMax * 1.1),
-                      ]}
-                      allowDecimals={false}
-                      tickFormatter={(value) => Math.round(value).toString()}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => [
-                        Math.round(value),
-                        "Water (L)",
-                      ]}
-                    />
-                    <Legend />
-                    <Line
-                      type="step"
-                      dataKey="value"
-                      name="Water (L)"
-                      stroke="#3b82f6"
-                      strokeWidth={3}
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+            <UsageChart
+              data={getSortedUsageData("water")}
+              title="💧 Weekly Water Usage"
+              color="#3b82f6"
+              label="Water (L)"
+            />
           ) : null}
           {data.entries.some((entry) => entry.entry_type === "energy") ? (
-            <div className="">
-              <h3 className="mb-4 text-lg font-semibold">
-                ⚡ Weekly Energy Usage
-              </h3>
-              <div className="p-4 bg-white border border-gray-300 rounded-lg">
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={getSortedUsageData("energy")}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={(date) =>
-                        new Date(date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })
-                      }
-                    />
-                    <YAxis
-                      domain={[
-                        0,
-                        (dataMax: number) => Math.ceil(dataMax * 1.1),
-                      ]}
-                      allowDecimals={false}
-                      tickFormatter={(value) => Math.round(value).toString()}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => [
-                        Math.round(value),
-                        "Energy (kWh)",
-                      ]}
-                    />
-                    <Legend />
-                    <Line
-                      type="step"
-                      dataKey="value"
-                      name="Energy (kWh)"
-                      stroke="#facc15"
-                      strokeWidth={3}
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+            <UsageChart
+              data={getSortedUsageData("energy")}
+              title="⚡ Weekly Energy Usage"
+              color="#facc15"
+              label="Energy (kWh)"
+            />
           ) : null}
         </div>
       </div>
@@ -283,18 +198,15 @@ function DashboardPage() {
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             {data.entries.length === 0 ? null : (
-              <button
-                onClick={handleExport}
-                className="flex justify-center gap-2 p-2 border rounded-lg hover:bg-gray-50"
-              >
+              <Button variant="secondary" onClick={handleExport}>
                 <Download />
-                Export CSV
-              </button>
+                <span>Export CSV</span>
+              </Button>
             )}
 
             <Link
               to={`/household/${id}/add`}
-              className="flex items-center justify-center gap-1 p-2 text-white bg-green-500 rounded-lg hover:bg-green-600"
+              className="flex items-center justify-center gap-1 p-2 text-white bg-green-600 rounded-lg hover:bg-green-500"
             >
               <Plus />
               <div>Add Entry</div>
@@ -315,7 +227,7 @@ function DashboardPage() {
             </p>
             <Link
               to={`/household/${id}/add`}
-              className="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600"
+              className="flex items-center gap-2 px-4 py-2 text-white transition-colors bg-green-600 rounded-lg hover:bg-green-500"
             >
               <Plus className="w-4 h-4" />
               Add Your First Entry

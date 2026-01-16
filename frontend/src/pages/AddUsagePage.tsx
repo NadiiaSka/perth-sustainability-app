@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, Link, Form } from "react-router-dom";
 import { usageApi } from "../api/client";
 import { ArrowLeft, Calendar, Droplet, Zap } from "lucide-react";
+import FormInput from "../components/FormInput";
+import Button from "../components/Button";
 
 function AddUsagePage() {
   const { id, entryId } = useParams();
   const isEditMode = !!entryId;
-  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -165,81 +166,54 @@ function AddUsagePage() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="value" className="block mb-1 text-gray-800">
-              Value <span className="text-red-500">*</span>
-            </label>
-            <div className="relative">
-              <input
-                className="w-full px-3 py-2 pr-16 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-transparent"
-                type="number"
-                id="value"
-                step="0.01"
-                required
-                value={formData.value}
-                onChange={(e) =>
-                  setFormData({ ...formData, value: e.target.value || "" })
-                }
-                placeholder={
-                  formData.entry_type === "water" ? "e.g., 150" : "e.g., 125"
-                }
-              />
-              <span className="absolute font-medium text-gray-600 -translate-y-1/2 right-3 top-1/2">
-                {formData.entry_type === "water" ? "L" : "kWh"}
-              </span>
-            </div>
+            <FormInput
+              label="Value"
+              type="number"
+              value={formData.value}
+              onChange={(value: string) =>
+                setFormData({ ...formData, value: value })
+              }
+              placeholder={
+                formData.entry_type === "water" ? "e.g., 150" : "e.g., 125"
+              }
+              required
+              step="0.1"
+              suffix={formData.entry_type === "water" ? "L" : "kWh"}
+            />
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 text-gray-800" htmlFor="recorded_at">
-              Date & Time <span className="text-gray-600">(Optional)</span>
-            </label>
-            <div className="relative">
-              <Calendar
-                className="absolute w-5 h-5 text-blue-400 transition-colors -translate-y-1/2 cursor-pointer left-3 top-1/2 hover:text-blue-600"
-                onClick={() => dateInputRef.current?.showPicker()}
-              />
-              <input
-                ref={dateInputRef}
-                className="w-full py-2 pl-10 pr-3 text-gray-800 bg-gray-50 border border-gray-300 cursor-pointer rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-transparent focus:bg-white [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:cursor-pointer hover:border-blue-400 hover:bg-white transition-colors"
-                type="datetime-local"
-                id="recorded_at"
-                max={new Date(
-                  Date.now() - new Date().getTimezoneOffset() * 60000
-                )
-                  .toISOString()
-                  .slice(0, 16)}
-                value={formData.recorded_at}
-                onChange={(e) =>
-                  setFormData({ ...formData, recorded_at: e.target.value })
-                }
-              />
-            </div>
-            <p className="mt-1 text-sm text-gray-600">
-              Leave blank to use current date and time
-            </p>
+            <FormInput
+              label="Date & Time"
+              type="datetime-local"
+              value={formData.recorded_at}
+              onChange={(value: string) =>
+                setFormData({ ...formData, recorded_at: value })
+              }
+              placeholder="Select date and time"
+              max={new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+                .toISOString()
+                .slice(0, 16)}
+              icon={<Calendar className="w-5 h-5 text-gray-400" />}
+              helperText="Leave blank to use current date and time"
+            />
           </div>
 
           <div className="flex flex-col-reverse gap-3 pt-4 mt-6 border-t sm:flex-row sm:justify-end sm:gap-4">
-            <button
-              type="button"
-              onClick={() => navigate(`/household/${id}`)}
-              className="w-full px-4 py-2 font-semibold text-gray-700 transition-colors border border-gray-300 rounded-lg sm:w-auto hover:bg-gray-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-4 py-2 font-semibold text-white transition-colors bg-blue-500 rounded-lg sm:w-auto hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {loading
-                ? isEditMode
-                  ? "Editing..."
-                  : "Adding..."
-                : isEditMode
-                ? "Edit Entry"
-                : "Add Entry"}
-            </button>
+            {Button({
+              variant: "secondary",
+              onClick: () => navigate(`/household/${id}`),
+              children: "Cancel",
+              fullWidth: false,
+            })}
+            {Button({
+              variant: "primary",
+              loading: loading,
+              children: isEditMode ? "Edit Entry" : "Add Entry",
+              fullWidth: false,
+              disabled: false,
+              size: "md",
+            })}
           </div>
         </form>
       </div>
