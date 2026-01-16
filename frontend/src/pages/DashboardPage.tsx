@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import {
   ArrowLeft,
+  ArrowUpDown,
   Award,
   Download,
   FileText,
@@ -28,6 +29,7 @@ function DashboardPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
     loadDashboard();
@@ -84,11 +86,22 @@ function DashboardPage() {
     return <div>Household not found</div>;
   }
 
+  const toggleSort = () => {
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  };
+
+  const sortedEntries =
+    data?.entries.slice().sort((a, b) => {
+      const dateA = new Date(a.recorded_at).getTime();
+      const dateB = new Date(b.recorded_at).getTime();
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    }) || [];
+
   const getSortedUsageData = (resources_type: string) =>
     data.entries
       .filter((entry) => entry.entry_type === resources_type)
       .map((entry) => ({
-        value: entry.value,
+        value: Number(entry.value),
         date: entry.recorded_at,
       }))
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -168,8 +181,20 @@ function DashboardPage() {
                         })
                       }
                     />
-                    <YAxis domain={[0, "auto"]} />
-                    <Tooltip />
+                    <YAxis
+                      domain={[
+                        0,
+                        (dataMax: number) => Math.ceil(dataMax * 1.1),
+                      ]}
+                      allowDecimals={false}
+                      tickFormatter={(value) => Math.round(value).toString()}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => [
+                        Math.round(value),
+                        "Water (L)",
+                      ]}
+                    />
                     <Legend />
                     <Line
                       type="step"
@@ -202,8 +227,20 @@ function DashboardPage() {
                         })
                       }
                     />
-                    <YAxis domain={[0, "auto"]} />
-                    <Tooltip />
+                    <YAxis
+                      domain={[
+                        0,
+                        (dataMax: number) => Math.ceil(dataMax * 1.1),
+                      ]}
+                      allowDecimals={false}
+                      tickFormatter={(value) => Math.round(value).toString()}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => [
+                        Math.round(value),
+                        "Energy (kWh)",
+                      ]}
+                    />
                     <Legend />
                     <Line
                       type="step"
@@ -293,14 +330,20 @@ function DashboardPage() {
                   <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
                     Value
                   </th>
-                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
-                    Date
+                  <th
+                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50"
+                    onClick={toggleSort}
+                  >
+                    <div className="flex items-center gap-2">
+                      Date
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
                   </th>
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {data.entries.map((entry) => (
+                {sortedEntries.map((entry) => (
                   <tr
                     key={entry.id}
                     className="transition-colors border-b border-gray-200 hover:bg-gray-50"
