@@ -2,16 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { householdApi, usageApi, DashboardData } from "../api/client";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import {
   ArrowLeft,
   ArrowUpDown,
   Award,
@@ -23,6 +13,7 @@ import {
 } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 import Button from "../components/Button";
+import UsageChart from "../components/UsageChart";
 
 function DashboardPage() {
   const { id } = useParams<{ id: string }>();
@@ -164,96 +155,20 @@ function DashboardPage() {
         </div>
         <div className="grid grid-cols-1 gap-5 my-6 md:grid-cols-2">
           {data.entries.some((entry) => entry.entry_type === "water") ? (
-            <div className="">
-              <h3 className="mb-4 text-lg font-semibold">
-                💧 Weekly Water Usage
-              </h3>
-              <div className="p-4 bg-white border border-gray-300 rounded-lg">
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={getSortedUsageData("water")}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={(date) =>
-                        new Date(date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })
-                      }
-                    />
-                    <YAxis
-                      domain={[
-                        0,
-                        (dataMax: number) => Math.ceil(dataMax * 1.1),
-                      ]}
-                      allowDecimals={false}
-                      tickFormatter={(value) => Math.round(value).toString()}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => [
-                        Math.round(value),
-                        "Water (L)",
-                      ]}
-                    />
-                    <Legend />
-                    <Line
-                      type="step"
-                      dataKey="value"
-                      name="Water (L)"
-                      stroke="#3b82f6"
-                      strokeWidth={3}
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+            <UsageChart
+              data={getSortedUsageData("water")}
+              title="💧 Weekly Water Usage"
+              color="#3b82f6"
+              label="Water (L)"
+            />
           ) : null}
           {data.entries.some((entry) => entry.entry_type === "energy") ? (
-            <div className="">
-              <h3 className="mb-4 text-lg font-semibold">
-                ⚡ Weekly Energy Usage
-              </h3>
-              <div className="p-4 bg-white border border-gray-300 rounded-lg">
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={getSortedUsageData("energy")}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                      dataKey="date"
-                      tickFormatter={(date) =>
-                        new Date(date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                        })
-                      }
-                    />
-                    <YAxis
-                      domain={[
-                        0,
-                        (dataMax: number) => Math.ceil(dataMax * 1.1),
-                      ]}
-                      allowDecimals={false}
-                      tickFormatter={(value) => Math.round(value).toString()}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => [
-                        Math.round(value),
-                        "Energy (kWh)",
-                      ]}
-                    />
-                    <Legend />
-                    <Line
-                      type="step"
-                      dataKey="value"
-                      name="Energy (kWh)"
-                      stroke="#facc15"
-                      strokeWidth={3}
-                      activeDot={{ r: 8 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+            <UsageChart
+              data={getSortedUsageData("energy")}
+              title="⚡ Weekly Energy Usage"
+              color="#facc15"
+              label="Energy (kWh)"
+            />
           ) : null}
         </div>
       </div>
