@@ -21,7 +21,7 @@ export default function SummaryCard({
         {icon} {title}
       </h3>
       <p className={`mt-5 ml-1 text-4xl ${textColor}`}>
-        {value || 0} {unit}
+        {value} {unit}
       </p>
       <p className="mt-2 ml-1 text-gray-600">This month</p>
     </div>

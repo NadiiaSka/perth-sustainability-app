@@ -14,6 +14,7 @@ import {
 import { getScoreColor } from "../utils/helpers";
 import Button from "../components/Button";
 import UsageChart from "../components/UsageChart";
+import SummaryCard from "../components/SummaryCard";
 
 function DashboardPage() {
   const { id } = useParams<{ id: string }>();
@@ -134,24 +135,22 @@ function DashboardPage() {
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4 my-6 md:grid-cols-2">
-          <div className="flex flex-col p-5 bg-blue-100 border-2 border-blue-200 rounded-lg">
-            <div>
-              <div>
-                <h3 className="text-lg">💧 Total Water Usage</h3>
-                <p className="mt-5 ml-1 text-4xl text-blue-500">
-                  {data.summary.water || 0} L
-                </p>
-              </div>
-            </div>
-            <p className="mt-2 ml-1 text-gray-600">This month</p>
-          </div>
-          <div className="flex flex-col p-5 bg-yellow-100 border-2 border-yellow-200 rounded-lg">
-            <h3 className="text-lg">⚡ Total Energy</h3>
-            <p className="mt-5 ml-1 text-4xl text-yellow-500">
-              {data.summary.energy || 0} kWh
-            </p>
-            <p className="mt-2 ml-1 text-gray-600">This month</p>
-          </div>
+          <SummaryCard
+            title="Total Water Usage"
+            value={data.summary.water || 0}
+            unit="L"
+            icon="💧"
+            bgColor="bg-blue-100"
+            textColor="text-blue-500"
+          />
+          <SummaryCard
+            title="Total Energy"
+            value={data.summary.energy || 0}
+            unit="kWh"
+            icon="⚡"
+            bgColor="bg-yellow-100"
+            textColor="text-yellow-500"
+          />
         </div>
         <div className="grid grid-cols-1 gap-5 my-6 md:grid-cols-2">
           {data.entries.some((entry) => entry.entry_type === "water") ? (
