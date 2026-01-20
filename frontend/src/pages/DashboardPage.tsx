@@ -21,6 +21,9 @@ function DashboardPage() {
   const navigate = useNavigate();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [sortColumn, setSortColumn] = useState<"type" | "value" | "date">(
+    "date"
+  );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
@@ -78,15 +81,30 @@ function DashboardPage() {
     return <div>Household not found</div>;
   }
 
-  const toggleSort = () => {
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+  const toggleSort = (column: "type" | "value" | "date") => {
+    if (sortColumn === column) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortOrder("asc");
+    }
   };
 
   const sortedEntries =
     data?.entries.slice().sort((a, b) => {
-      const dateA = new Date(a.recorded_at).getTime();
-      const dateB = new Date(b.recorded_at).getTime();
-      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+      let comparison = 0;
+
+      if (sortColumn === "date") {
+        const dateA = new Date(a.recorded_at).getTime();
+        const dateB = new Date(b.recorded_at).getTime();
+        comparison = dateA - dateB;
+      } else if (sortColumn === "value") {
+        comparison = Number(a.value) - Number(b.value);
+      } else if (sortColumn === "type") {
+        comparison = a.entry_type.localeCompare(b.entry_type);
+      }
+
+      return sortOrder === "asc" ? comparison : -comparison;
     }) || [];
 
   const getSortedUsageData = (resources_type: string) =>
@@ -156,7 +174,7 @@ function DashboardPage() {
           {data.entries.some((entry) => entry.entry_type === "water") ? (
             <UsageChart
               data={getSortedUsageData("water")}
-              title="💧 Weekly Water Usage"
+              title="💧 Water Usage Trend"
               color="#3b82f6"
               label="Water (L)"
             />
@@ -164,7 +182,7 @@ function DashboardPage() {
           {data.entries.some((entry) => entry.entry_type === "energy") ? (
             <UsageChart
               data={getSortedUsageData("energy")}
-              title="⚡ Weekly Energy Usage"
+              title="⚡ Energy Usage Trend"
               color="#facc15"
               label="Energy (kWh)"
             />
@@ -238,15 +256,27 @@ function DashboardPage() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="border-b border-gray-300">
-                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
-                    Type
-                  </th>
-                  <th className="px-4 py-3 text-sm font-semibold text-left text-gray-700">
-                    Value
+                  <th
+                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50"
+                    onClick={() => toggleSort("type")}
+                  >
+                    <div className="flex items-center gap-2">
+                      Type
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
                   </th>
                   <th
                     className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50"
-                    onClick={toggleSort}
+                    onClick={() => toggleSort("value")}
+                  >
+                    <div className="flex items-center gap-2">
+                      Value
+                      <ArrowUpDown className="w-4 h-4" />
+                    </div>
+                  </th>
+                  <th
+                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50"
+                    onClick={() => toggleSort("date")}
                   >
                     <div className="flex items-center gap-2">
                       Date
