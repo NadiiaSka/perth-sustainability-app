@@ -96,6 +96,29 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
+// PUT update household
+router.put("/:id", async (req: Request, res: Response) => {
+  const pool: Pool = req.app.locals.db;
+  const { id } = req.params;
+  const { name, members, postcode } = req.body;
+
+  try {
+    const result = await pool.query(
+      "UPDATE households SET name = $1, members = $2, postcode = $3 WHERE id = $4 RETURNING *",
+      [name, members, postcode, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Household not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error updating household:", error);
+    res.status(500).json({ error: "Failed to update household" });
+  }
+});
+
 // DELETE household
 router.delete("/:id", async (req: Request, res: Response) => {
   const pool: Pool = req.app.locals.db;
