@@ -131,7 +131,17 @@ function DashboardPage() {
 
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <strong className="text-xl">{data.household.name}</strong>
+            <div className="flex items-center gap-3 mb-2">
+              <strong className="text-xl">{data.household.name}</strong>
+              <Link
+                to={`/household/${id}/edit-info`}
+                className="p-2 mt-1 transition-colors border border-transparent rounded-full hover:bg-blue-50 hover:border-blue-200"
+                title="Edit Household Info"
+              >
+                <Pencil className="w-4 h-4 text-blue-600 " />
+              </Link>
+            </div>
+
             <p className="text-gray-600">
               {data.household.members} member
               {data.household.members !== 1 && "s"}
@@ -309,14 +319,14 @@ function DashboardPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => handleEdit(entry.id)}
-                          className="p-2 transition-colors rounded-full hover:bg-blue-50"
+                          className="p-2 transition-colors border border-transparent rounded-full hover:bg-blue-50 hover:border-blue-100"
                           title="Edit"
                         >
                           <Pencil className="w-4 h-4 text-blue-600" />
                         </button>
                         <button
                           onClick={() => handleDelete(entry.id)}
-                          className="p-2 transition-colors rounded-full hover:bg-red-50"
+                          className="p-2 transition-colors border border-transparent rounded-full hover:bg-red-50 hover:border-red-100"
                           title="Delete"
                         >
                           <Trash className="w-4 h-4 text-red-600" />

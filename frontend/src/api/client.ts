@@ -26,7 +26,13 @@ export interface UsageEntry {
 }
 
 export interface DashboardData {
-  household: Household;
+  household: {
+    id: number;
+    name: string;
+    members: number;
+    postcode: string;
+    created_at: string;
+  };
   entries: UsageEntry[];
   summary: { water?: number; energy?: number };
   greenScore: number;
@@ -38,6 +44,8 @@ export const householdApi = {
   getById: (id: number) => api.get<DashboardData>(`/households/${id}`),
   create: (data: { name: string; members: number; postcode: string }) =>
     api.post<Household>("/households", data),
+  update: (id: number, data: Partial<Household>) =>
+    api.put<Household>(`/households/${id}`, data),
   delete: (id: number) => api.delete(`/households/${id}`),
 };
 

@@ -1,15 +1,18 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { householdApi } from "../api/client";
 import { ArrowLeft } from "lucide-react";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 
 function RegisterPage() {
+  const { id } = useParams();
+  const isEditMode = !!id;
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState<{
     name: string;
-    members: number | "";
+    members: string | number;
     postcode: string;
   }>({
     name: "",
@@ -25,17 +28,49 @@ function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await householdApi.create({
-        ...formData,
-        members: formData.members || 1,
-      });
-      navigate(`/household/${response.data.id}`);
+      if (isEditMode && id) {
+        await householdApi.update(Number(id), {
+          name: formData.name,
+          members: Number(formData.members) || 1,
+          postcode: formData.postcode,
+        });
+        navigate(`/household/${id}`);
+        return;
+      } else {
+        const response = await householdApi.create({
+          name: formData.name,
+          members: Number(formData.members) || 1,
+          postcode: formData.postcode,
+        });
+        navigate(`/household/${response.data.id}`);
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || "Failed to register household");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isEditMode && id) {
+      setLoading(true);
+      const loadHousehold = async () => {
+        try {
+          const response = await householdApi.getById(Number(id));
+          setFormData({
+            name: response.data.household.name,
+            members: response.data.household.members,
+            postcode: response.data.household.postcode,
+          });
+        } catch (error) {
+          setError("Failed to load household data");
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadHousehold();
+    }
+  }, [id, isEditMode]);
 
   return (
     <div>
@@ -49,7 +84,9 @@ function RegisterPage() {
             Back to Home page
           </Link>
         </div>
-        <h1 className="mb-6 text-2xl font-bold">Register Your Household</h1>
+        <h1 className="mb-6 text-2xl font-bold">
+          {isEditMode ? "Edit Your Household" : "Register Your Household"}
+        </h1>
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm md:max-w-4xl"
@@ -78,7 +115,10 @@ function RegisterPage() {
               type: "number",
               value: formData.members,
               onChange: (value: string) =>
-                setFormData({ ...formData, members: Number(value) }),
+                setFormData({
+                  ...formData,
+                  members: value ? Number(value) : "",
+                }),
               placeholder: "e.g., 4",
               required: true,
               min: "1",
@@ -104,7 +144,13 @@ function RegisterPage() {
               loading={loading}
               fullWidth={false}
             >
-              {loading ? "Registering..." : "Register Household"}
+              {loading
+                ? isEditMode
+                  ? "Updating..."
+                  : "Registering..."
+                : isEditMode
+                ? "Update Household"
+                : "Register Household"}
             </Button>
           </div>
         </form>
