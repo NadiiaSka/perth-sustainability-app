@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useParams, useNavigate, Link, Form } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { usageApi } from "../api/client";
 import { ArrowLeft, Calendar, Droplet, Zap } from "lucide-react";
 import FormInput from "../components/FormInput";
@@ -108,7 +108,7 @@ function AddUsagePage() {
             <div className="grid grid-cols-1 gap-3 mt-2 md:grid-cols-2">
               <button
                 type="button"
-                onClick={(e) =>
+                onClick={() =>
                   setFormData({ ...formData, entry_type: "water" })
                 }
                 className={
@@ -134,7 +134,7 @@ function AddUsagePage() {
               </button>
               <button
                 type="button"
-                onClick={(e) =>
+                onClick={() =>
                   setFormData({ ...formData, entry_type: "energy" })
                 }
                 className={
