@@ -8,13 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-interface UsageChartProps {
-  data: any[];
-  title: string;
-  color: string;
-  label: string;
-}
+import type { UsageChartProps } from "../types/components";
 
 export default function UsageChart({
   data,

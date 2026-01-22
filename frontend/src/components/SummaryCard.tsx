@@ -1,11 +1,4 @@
-interface SummaryCardProps {
-  title: string;
-  value: number;
-  unit: string;
-  icon: React.ReactNode;
-  bgColor: string;
-  textColor: string;
-}
+import type { SummaryCardProps } from "../types/components";
 
 export default function SummaryCard({
   title,

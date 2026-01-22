@@ -16,6 +16,7 @@ export interface FormInputProps {
   type: string;
   value: string | number;
   onChange: (value: string) => void;
+  onIconClick?: () => void;
   placeholder?: string;
   required?: boolean;
   min?: string;

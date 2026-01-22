@@ -1,4 +1,13 @@
 import axios from "axios";
+import type {
+  Household,
+  UsageEntry,
+  DashboardData,
+  CreateHouseholdRequest,
+  UpdateHouseholdRequest,
+  CreateUsageEntryRequest,
+  UpdateUsageEntryRequest,
+} from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
@@ -9,56 +18,22 @@ const api = axios.create({
   },
 });
 
-export interface Household {
-  id: number;
-  name: string;
-  members: number;
-  postcode: string;
-  created_at: string;
-}
-
-export interface UsageEntry {
-  id: number;
-  household_id: number;
-  entry_type: "water" | "energy";
-  value: number;
-  recorded_at: string;
-}
-
-export interface DashboardData {
-  household: {
-    id: number;
-    name: string;
-    members: number;
-    postcode: string;
-    created_at: string;
-  };
-  entries: UsageEntry[];
-  summary: { water?: number; energy?: number };
-  greenScore: number;
-  tips: string[];
-}
-
 export const householdApi = {
   getAll: () => api.get<{ households: Household[] }>("/households"),
   getById: (id: number) => api.get<DashboardData>(`/households/${id}`),
-  create: (data: { name: string; members: number; postcode: string }) =>
+  create: (data: CreateHouseholdRequest) =>
     api.post<Household>("/households", data),
-  update: (id: number, data: Partial<Household>) =>
+  update: (id: number, data: UpdateHouseholdRequest) =>
     api.put<Household>(`/households/${id}`, data),
   delete: (id: number) => api.delete(`/households/${id}`),
 };
 
 export const usageApi = {
-  create: (data: {
-    household_id: number;
-    entry_type: "water" | "energy";
-    value: number;
-    recorded_at?: string;
-  }) => api.post<UsageEntry>("/usage", data),
+  create: (data: CreateUsageEntryRequest) =>
+    api.post<UsageEntry>("/usage", data),
   getById: (id: number) => api.get<UsageEntry>(`/usage/${id}`),
   delete: (id: number) => api.delete(`/usage/${id}`),
-  update: (id: number, data: Partial<UsageEntry>) =>
+  update: (id: number, data: UpdateUsageEntryRequest) =>
     api.put<UsageEntry>(`/usage/${id}`, data),
   exportCsv: (householdId: number) =>
     api.get(`/usage/export/${householdId}`, { responseType: "blob" }),

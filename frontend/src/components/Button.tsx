@@ -1,12 +1,4 @@
-interface ButtonProps {
-  variant?: "primary" | "secondary" | "danger";
-  size?: "sm" | "md" | "lg";
-  loading?: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-  fullWidth?: boolean;
-}
+import type { ButtonProps } from "../types/components";
 
 export default function Button({
   variant = "primary",

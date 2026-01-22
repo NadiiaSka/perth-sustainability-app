@@ -1,20 +1,5 @@
 import { useRef } from "react";
-
-interface FormInputProps {
-  label: string;
-  type: string;
-  value: string | number;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  required?: boolean;
-  step?: string;
-  min?: string;
-  max?: string;
-  suffix?: string;
-  icon?: React.ReactNode;
-  onIconClick?: () => void;
-  helperText?: string;
-}
+import type { FormInputProps } from "../types/components";
 
 export default function FormInput({
   label,
