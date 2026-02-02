@@ -46,6 +46,17 @@ function AddUsagePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Validate that the selected date-time is not in the future
+    if (formData.recorded_at) {
+      const selectedDate = new Date(formData.recorded_at);
+      const now = new Date();
+      if (selectedDate > now) {
+        setError("Cannot select a future date and time");
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
@@ -67,7 +78,7 @@ function AddUsagePage() {
     } catch (err: any) {
       setError(
         err.response?.data?.error ||
-          `Failed to ${isEditMode ? "update" : "add"} entry`
+          `Failed to ${isEditMode ? "update" : "add"} entry`,
       );
     } finally {
       setLoading(false);
@@ -184,7 +195,7 @@ function AddUsagePage() {
 
           <div className="mb-4">
             <FormInput
-              label="Date & Time"
+              label="Date & Time (optional)"
               type="datetime-local"
               value={formData.recorded_at}
               onChange={(value: string) =>
