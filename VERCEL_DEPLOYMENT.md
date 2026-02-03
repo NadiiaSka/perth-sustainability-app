@@ -21,21 +21,109 @@ This is a monorepo with:
 
 ## Database Setup
 
-Vercel doesn't host databases, so you need an external PostgreSQL provider:
+Vercel doesn't host databases, so you need an external PostgreSQL provider. Your Docker database won't be accessible from Vercel since it runs locally.
 
-### Option 1: Vercel Postgres (Recommended)
+### Option 1: Neon (Recommended - Best Free Tier)
 
-1. Go to your Vercel project dashboard
-2. Click "Storage" → "Create Database" → "Postgres"
-3. Follow the setup wizard
-4. Connection details will be auto-added to your environment variables
+**Why Neon**: 10GB storage free, serverless, autoscaling, excellent for hobby projects
 
-### Option 2: Other Providers
+1. **Sign up at https://neon.tech**
+   - Click "Sign Up" (use GitHub for quick signup)
 
-- **Neon** (https://neon.tech) - Free tier available
-- **Supabase** (https://supabase.com) - Free tier available
-- **Railway** (https://railway.app) - Free tier available
-- **ElephantSQL** (https://www.elephantsql.com) - Free tier available
+2. **Create a new project**:
+   - Click "Create Project"
+   - Project name: `perth-sustainability` (or your choice)
+   - Region: Choose closest to your users
+   - PostgreSQL version: 16 (default)
+   - Click "Create Project"
+
+3. **Get your connection string**:
+   - You'll see a connection string immediately after creation
+   - It looks like: `postgresql://username:password@host.neon.tech/dbname?sslmode=require`
+   - **Copy this entire string** - you'll need it for Vercel
+
+4. **Run the database schema**:
+   - In Neon dashboard, click "SQL Editor"
+   - Copy content from `backend/src/db/schema.sql`
+   - Paste into SQL Editor and click "Run"
+   - You should see "Successfully executed" message
+
+5. **Test connection from your computer** (optional):
+   
+   You can test the connection from your local terminal/PowerShell:
+   
+   **On Windows (PowerShell):**
+   ```powershell
+   # If you have PostgreSQL installed
+   psql "postgresql://username:password@host.neon.tech/dbname?sslmode=require"
+   
+   # Or use the Neon SQL Editor in your browser (easier for Windows users)
+   ```
+   
+   **On Mac/Linux:**
+   ```bash
+   psql "postgresql://username:password@host.neon.tech/dbname?sslmode=require"
+   ```
+   
+   **Don't have psql installed?** Skip this step and use Neon's SQL Editor instead - it works just as well!
+
+### Option 2: Supabase (Good Free Tier)
+
+**Why Supabase**: 500MB storage free, includes auth & storage, nice dashboard
+
+1. **Sign up at https://supabase.com**
+   - Click "Start your project"
+   - Sign in with GitHub
+
+2. **Create a new project**:
+   - Organization: Create new or use existing
+   - Project name: `perth-sustainability`
+   - Database password: Generate a strong password (save it!)
+   - Region: Choose closest to your users
+   - Click "Create new project" (takes ~2 minutes)
+
+3. **Get your connection string**:
+   - Go to Project Settings (gear icon) → Database
+   - Scroll to "Connection string"
+   - Select "URI" mode
+   - Copy the connection string
+   - **Replace `[YOUR-PASSWORD]`** with the password you set earlier
+   - Should look like: `postgresql://postgres:[YOUR-PASSWORD]@db.xxxxx.supabase.co:5432/postgres`
+
+4. **Run the database schema**:
+   - In Supabase dashboard, go to "SQL Editor"
+   - Click "New query"
+   - Copy content from `backend/src/db/schema.sql`
+   - Paste and click "Run"
+
+### Option 3: Vercel Postgres (Paid but Seamless)
+
+**Why Vercel Postgres**: Integrates perfectly, but requires paid plan ($20/month minimum)
+
+1. **In Vercel dashboard** (after deploying your app):
+   - Go to your project
+   - Click "Storage" tab
+   - Click "Create Database"
+   - Select "Postgres"
+   - Follow wizard
+
+2. **Environment variables auto-added**:
+   - Vercel automatically adds `POSTGRES_URL` and other variables
+   - No manual configuration needed
+
+3. **Run schema**:
+   - Click on your database in Vercel
+   - Go to "Query" tab
+   - Copy content from `backend/src/db/schema.sql`
+   - Paste and execute
+
+### Quick Comparison
+
+| Provider            | Free Storage | Limitations                    | Best For                     |
+| ------------------- | ------------ | ------------------------------ | ---------------------------- |
+| **Neon**            | 10GB         | No sleep, always on            | Hobby projects (Recommended) |
+| **Supabase**        | 500MB        | Pauses after 7 days inactivity | Smaller projects             |
+| **Vercel Postgres** | None (paid)  | Requires Pro plan ($20/mo)     | Production apps              |
 
 ## Deployment Steps
 
@@ -64,16 +152,22 @@ Vercel doesn't host databases, so you need an external PostgreSQL provider:
 4. **Add Environment Variables**:
    Click "Environment Variables" and add:
 
-   For the full-stack deployment:
+   **Required variable:**
+   - Name: `DATABASE_URL`
+   - Value: Your connection string from Neon/Supabase (the full postgresql:// URL)
+   - Apply to: Production, Preview, and Development
+
+   **Optional but recommended:**
+   - Name: `NODE_ENV`
+   - Value: `production`
+
+   Example DATABASE_URL:
 
    ```
-   DATABASE_URL=postgresql://user:password@host:5432/dbname
-   NODE_ENV=production
+   postgresql://user:password@ep-cool-name-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
    ```
 
-   Get your DATABASE_URL from your PostgreSQL provider.
-
-5. **Deploy**: Click "Deploy" and wait for the build to complete.
+5. **Deploy**: Click "Deploy" and wait for the build to complete (~2-3 minutes).
 
 ### Method 2: Deploy via Vercel CLI
 
