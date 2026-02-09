@@ -267,7 +267,7 @@ function DashboardPage() {
               <thead>
                 <tr className="border-b border-gray-300">
                   <th
-                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50"
+                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50 whitespace-nowrap"
                     onClick={() => toggleSort("type")}
                   >
                     <div className="flex items-center gap-2">
@@ -276,7 +276,7 @@ function DashboardPage() {
                     </div>
                   </th>
                   <th
-                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50"
+                    className="px-4 py-3 text-sm font-semibold text-left text-gray-700 cursor-pointer hover:bg-gray-50 whitespace-nowrap"
                     onClick={() => toggleSort("value")}
                   >
                     <div className="flex items-center gap-2">
@@ -302,14 +302,14 @@ function DashboardPage() {
                     key={entry.id}
                     className="transition-colors border-b border-gray-200 hover:bg-gray-50"
                   >
-                    <td className="px-4 py-3">
-                      <span className="flex items-center gap-2 font-medium">
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className="flex items-center gap-2 font-medium whitespace-nowrap">
                         {entry.entry_type === "water"
                           ? "💧 Water"
                           : "⚡ Energy"}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 whitespace-nowrap">
                       {entry.value} {entry.entry_type === "water" ? "L" : "kWh"}
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600">
