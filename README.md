@@ -12,9 +12,13 @@ See the core user flow in action:
 
 ![Dashboard demo](docs/assets/dashboard-demo.gif)
 
+If the animation doesn't load inline, [open Dashboard demo](docs/assets/dashboard-demo.gif).
+
 ### Usage Input + Chart Update
 
 ![Usage input and chart demo](docs/assets/usageChartAndInput-demo.gif)
+
+If the animation doesn't load inline, [open Usage Input demo](docs/assets/usageChartAndInput-demo.gif).
 
 ---
 
