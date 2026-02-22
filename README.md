@@ -8,14 +8,9 @@ Track household water and energy usage with sustainability scoring and personali
 
 See the core user flow in action:
 
-### Dashboard Overview
-<video src="https://github.com/user-attachments/assets/dabebe85-fbb6-49ca-ad23-e9018be431ee" width="480" controls autoplay loop muted></video>
-
-
-### Usage Input + Chart Update
-
-
-https://github.com/user-attachments/assets/d8e6a824-d983-42e9-bcd3-488065325c4a
+| Dashboard Overview                                                                  | Usage Input + Chart Update                                                                               |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| <img src="docs/assets/dashboard-demo_resized.gif" width="380" alt="Dashboard demo"> | <img src="docs/assets/usageChartAndInput-demo_resized.gif" width="380" alt="Usage chart and input demo"> |
 
 ---
 
