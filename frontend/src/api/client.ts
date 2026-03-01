@@ -1,12 +1,17 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+// Use environment variable or fallback to relative path for dev
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+
+console.log("API Base URL:", API_BASE_URL); // Helpful for debugging
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 10000, // 10 second timeout
 });
 
 export interface Household {
@@ -40,7 +45,8 @@ export interface DashboardData {
 }
 
 export const householdApi = {
-  getAll: () => api.get<{ households: Household[] }>("/households"),
+  getAll: () =>
+    api.get<{ households: Household[] }>("/households", { timeout: 45000 }),
   getById: (id: number) => api.get<DashboardData>(`/households/${id}`),
   create: (data: { name: string; members: number; postcode: string }) =>
     api.post<Household>("/households", data),
