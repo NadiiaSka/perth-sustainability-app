@@ -4,32 +4,66 @@ import { householdApi, Household } from "../api/client";
 import { Leaf, Zap, Droplet } from "lucide-react";
 import { getScoreColor } from "../utils/helpers";
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 3000;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 function HomePage() {
   const [householdsWithData, setHouseholdsWithData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     loadHouseholds();
   }, []);
 
   const loadHouseholds = async () => {
-    try {
-      const response = await householdApi.getAll();
-      const households = response.data.households;
+    setLoading(true);
+    setLoadError(null);
 
-      const householdsData = await Promise.all(
-        households.map(async (household: Household) => {
-          try {
-            const data = await householdApi.getById(household.id);
-            return { ...household, ...data.data };
-          } catch {
-            return household;
+    try {
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+          const response = await householdApi.getAll();
+          const households = response.data.households;
+
+          if (households.length === 0 && attempt < MAX_RETRIES) {
+            await sleep(RETRY_DELAY_MS * attempt);
+            continue;
           }
-        })
-      );
-      setHouseholdsWithData(householdsData);
-    } catch (error) {
-      console.error("Failed to load households:", error);
+
+          const householdsData = await Promise.all(
+            households.map(async (household: Household) => {
+              try {
+                const data = await householdApi.getById(household.id);
+                return { ...household, ...data.data };
+              } catch {
+                return household;
+              }
+            }),
+          );
+
+          setHouseholdsWithData(householdsData);
+          return;
+        } catch (error: any) {
+          const status = error?.response?.status;
+          const isRetriable =
+            !status ||
+            status >= 500 ||
+            status === 429 ||
+            error?.code === "ECONNABORTED";
+
+          if (!isRetriable || attempt === MAX_RETRIES) {
+            console.error("Failed to load households:", error);
+            setHouseholdsWithData([]);
+            setLoadError("Could not connect to backend. Please try again.");
+            return;
+          }
+
+          await sleep(RETRY_DELAY_MS * attempt);
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -38,7 +72,22 @@ function HomePage() {
   if (loading) {
     return (
       <div>
-        <div>Loading...</div>
+        <div>Loading households...</div>
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div>
+        <p className="text-red-600">{loadError}</p>
+        <button
+          type="button"
+          onClick={loadHouseholds}
+          className="px-3 py-2 mt-3 text-white bg-green-600 rounded-md hover:bg-green-500"
+        >
+          Retry
+        </button>
       </div>
     );
   }
@@ -80,7 +129,7 @@ function HomePage() {
                   </div>
                   <div
                     className={`flex gap-1 px-3 py-2 ${getScoreColor(
-                      household.greenScore
+                      household.greenScore,
                     )} rounded-xl`}
                   >
                     <Leaf />
