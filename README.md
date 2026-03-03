@@ -86,7 +86,7 @@ All containers have **hot reload** enabled — edit your code and see changes in
 
 | Name | Role |
 | ---- | ---- |
-| Michel M. Nzikou | DMN Solutions · DevHub CoLab Program Lead |
+| Michel M. Nzikou | DMN SOLUTIONS · DevHub CoLab Program Lead |
 | Nadiia Syvakivska | Consultant Developer |
 
 For more details, visit our blog: https://nadiia-dev.vercel.app  
